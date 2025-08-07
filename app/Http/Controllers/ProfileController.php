@@ -32,8 +32,8 @@ class ProfileController extends Controller
         $request->user()->fill(
         $request->validate([
             'name' => ['string', 'max:255'],
-            'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($request->user()->id)],
-            'no_hp' => ['string', 'max:15'],
+            // 'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($request->user()->id)],
+            // 'no_hp' => ['string', 'max:15'],
             'nisn' => ['string', 'max:10'],
         ])
     );

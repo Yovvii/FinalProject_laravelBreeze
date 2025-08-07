@@ -14,11 +14,12 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('email')->unique();
+            $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->bigInteger('no_hp')->unique();
+            $table->bigInteger('no_hp')->nullable();
             $table->bigInteger('nisn')->unique();
-            $table->string('password')->hash();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('password');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -50,6 +51,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('no_hp');
             $table->dropColumn('nisn');
+            $table->dropColumn('tanggal_lahir');
         });
     }
 };

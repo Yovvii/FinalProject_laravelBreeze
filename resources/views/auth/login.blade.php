@@ -2,14 +2,20 @@
     <!-- Session Status -->
     <x-auth-session-status class="mb-4" :status="session('status')" />
 
+    @if (session('status') === 'registrasi-berhasil')
+        <div class="mb-4 font-medium text-sm text-green-600">
+            {{ __('Pendaftaran berhasil! Silakan login untuk melanjutkan.') }}
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('login') }}">
         @csrf
 
-        <!-- Email Address -->
-        <div>
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        <!-- NISN -->
+        <div class="mt-4">
+            <x-input-label for="nisn" :value="__('NISN')" />
+            <x-text-input id="nisn" class="block mt-1 w-full" type="text" name="nisn" :value="old('nisn')" required/>
+            <x-input-error :messages="$errors->get('nisn')" class="mt-2" />
         </div>
 
         <!-- Password -->
@@ -22,6 +28,8 @@
                             required autocomplete="current-password" />
 
             <x-input-error :messages="$errors->get('password')" class="mt-2" />
+
+            <p class="text-gray-300 text-sm mt-2">Tanggal Lahir sebagai password default (DDMMYYYY)</p>
         </div>
 
         <!-- Remember Me -->

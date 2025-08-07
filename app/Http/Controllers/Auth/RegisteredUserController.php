@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rules;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rules;
-use Illuminate\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
@@ -31,24 +32,21 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
-            'no_hp' => ['required', 'numeric', 'digits_between:10,15', 'unique:'.User::class],
             'nisn' => ['required', 'numeric', 'unique:'.User::class],
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'tanggal_lahir' => ['required', 'date'],
         ]);
+
+        $tanggal_lahir = Carbon::createFromFormat('Y-m-d', $request->tanggal_lahir)->format('dmY');
 
         $user = User::create([
             'name' => $request->name,
-            'email' => $request->email,
-            'no_hp' => $request->no_hp,
             'nisn' => $request->nisn,
-            'password' => Hash::make($request->password),
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'password' => Hash::make($tanggal_lahir),
         ]);
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect(route('login'))->with('status', 'registrasi-berhasil');
     }
 }
