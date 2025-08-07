@@ -55,7 +55,7 @@
 
         <div>
             <x-input-label for="nisn" :value="__('NISN')" />
-            <x-text-input id="nisn" name="nisn" type="number" class="mt-1 block w-full" :value="old('nisn', $user->nisn)" required autofocus autocomplete="nisn" />
+            <x-text-input id="nisn" name="nisn" type="text" class="mt-1 block w-full" :value="old('nisn', $user->nisn)" required autofocus autocomplete="nisn" />
             <x-input-error class="mt-2" :messages="$errors->get('nisn')" />
         </div>
 

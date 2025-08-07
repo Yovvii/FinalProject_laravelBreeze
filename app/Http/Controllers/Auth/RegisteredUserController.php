@@ -32,7 +32,7 @@ class RegisteredUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'nisn' => ['required', 'numeric', 'unique:'.User::class],
+            'nisn' => ['required', 'string', 'unique:'.User::class],
             'tanggal_lahir' => ['required', 'date'],
         ]);
 
@@ -47,6 +47,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect(route('login'))->with('status', 'registrasi-berhasil');
+        return redirect(route('login'))->with('success', 'Pendaftaran berhasil! Silahkan login kembali.');
     }
 }

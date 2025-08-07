@@ -14,12 +14,24 @@ return new class extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('foto')->nullable();
+            $table->string('nisn')->unique();
+            $table->string('jenis_kelamin')->nullable();
+            $table->date('tanggal_lahir')->nullable();
+            $table->string('alamat')->nullable();
+            $table->string('no_kk')->nullable();
+            $table->string('nik')->nullable();
+            $table->string('no_hp')->nullable();
+            $table->string('ayah')->nullable();
+            $table->string('ibu')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
-            $table->bigInteger('no_hp')->nullable();
-            $table->bigInteger('nisn')->unique();
-            $table->date('tanggal_lahir')->nullable();
             $table->string('password');
+            $table->string('agama')->nullable();
+            $table->string('kebutuhan_k')->nullable();
+            // $table->foreignId('sekolah_asal')->nullable()->constrained('sekolahs');
+            $table->string('sekolah_asal')->nullable();
+            $table->string('sertifikat')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
