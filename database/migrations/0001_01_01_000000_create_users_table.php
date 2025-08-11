@@ -12,28 +12,41 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('users', function (Blueprint $table) {
+            // $table->id();
+            // $table->string('name');
+            // $table->string('foto')->nullable();
+            // $table->string('nisn')->unique();
+            // $table->string('jenis_kelamin')->nullable();
+            // $table->date('tanggal_lahir')->nullable();
+            // $table->string('alamat')->nullable();
+            // $table->string('no_kk')->nullable();
+            // $table->string('nik')->nullable();
+            // $table->string('no_hp')->nullable();
+            // $table->string('ayah')->nullable();
+            // $table->string('ibu')->nullable();
+            // $table->string('email')->unique()->nullable();
+            // $table->timestamp('email_verified_at')->nullable();
+            // $table->string('password');
+            // $table->string('agama')->nullable();
+            // $table->string('kebutuhan_k')->nullable();
+            // $table->foreignId('sekolah_asal')->nullable()->constrained('sekolahs');
+            // $table->string('sekolah_asal')->nullable();
+            // $table->string('sertifikat')->nullable();
+            // $table->rememberToken();
+            // $table->timestamps();
+            // $table->string('password_changed_at')->nullable();
+            // $table->string('data_diri_completed')->nullable();
+            // $table->string('rapor_completed')->nullable();
+
             $table->id();
             $table->string('name');
-            $table->string('foto')->nullable();
-            $table->string('nisn')->unique();
-            $table->string('jenis_kelamin')->nullable();
-            $table->date('tanggal_lahir')->nullable();
-            $table->string('alamat')->nullable();
-            $table->string('no_kk')->nullable();
-            $table->string('nik')->nullable();
-            $table->string('no_hp')->nullable();
-            $table->string('ayah')->nullable();
-            $table->string('ibu')->nullable();
             $table->string('email')->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->string('agama')->nullable();
-            $table->string('kebutuhan_k')->nullable();
-            // $table->foreignId('sekolah_asal')->nullable()->constrained('sekolahs');
-            $table->string('sekolah_asal')->nullable();
-            $table->string('sertifikat')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            $table->string('role')->default('siswa'); 
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
@@ -60,10 +73,5 @@ return new class extends Migration
         Schema::dropIfExists('users');
         Schema::dropIfExists('password_reset_tokens');
         Schema::dropIfExists('sessions');
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('no_hp');
-            $table->dropColumn('nisn');
-            $table->dropColumn('tanggal_lahir');
-        });
     }
 };
