@@ -7,8 +7,10 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Validation\Rules\Password;
 use App\Http\Requests\ProfileUpdateRequest;
 
 class ProfileController extends Controller
@@ -18,7 +20,7 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
-        return view('profile.edit', [
+        return view('account.update_password', [
             'user' => $request->user(),
         ]);
     }
@@ -28,15 +30,7 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        // $request->user()->fill($request->validated());
-        $request->user()->fill(
-        $request->validate([
-            'name' => ['string', 'max:255'],
-            // 'email' => ['email', 'max:255', Rule::unique(User::class)->ignore($request->user()->id)],
-            // 'no_hp' => ['string', 'max:15'],
-            'nisn' => ['string', 'max:10'],
-        ])
-    );
+        $request->user()->fill($request->validated());
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;
@@ -44,7 +38,27 @@ class ProfileController extends Controller
 
         $request->user()->save();
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        return Redirect::route('profile.edit')->with('success', 'profile-updated');
+    }
+
+    public function updatePassword(Request $request)
+    {
+        // Validasi input
+        $request->validate([
+            'current_password' => ['request', 'string'],
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        if (!Hash::check($request->current_password, Auth::user()->password)) {
+            return back()->withErrors(['current_password' => 'Password lama salah.']);
+        }
+
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->password = Hash::make($request->password);
+        $user->save();
+
+        return back()->with('success', 'Password berhasil diubah.');
     }
 
     /**
@@ -67,4 +81,5 @@ class ProfileController extends Controller
 
         return Redirect::to('/');
     }
+
 }
