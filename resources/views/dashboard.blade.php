@@ -5,15 +5,24 @@
         </h2>
     </x-slot>
 
-    {{-- <div class="py-12">
+    <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    {{ __("You're logged in!") }}
-                </div>
+            <div class="bg-white dark:bg-gray-800 overflow-hi dden shadow-sm sm:rounded-lg p-12">
+
+                {{-- @php
+                    dd(session()->all());
+                @endphp --}}
+
+                @if (session('password_updated_success'))
+                    @include('account.timeline')
+                @elseif (session('first_login'))
+                    @include('account.update_password')
+                @else
+                    {{ __("Anda berhasil login!") }}
+                @endif
+
             </div>
         </div>
-    </div> --}}
+    </div>
 
-    @include('account.update_password')
 </x-app-layout>

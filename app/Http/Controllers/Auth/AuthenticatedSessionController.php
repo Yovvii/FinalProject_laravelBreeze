@@ -9,8 +9,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Validation\ValidationException;
+use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
+
+/**
+ * @mixin \Illuminate\Session\Store
+ */
 
 class AuthenticatedSessionController extends Controller
 {
@@ -61,7 +67,12 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        Session::flash('first_login', true);
+
+        // dd(Session::all());
+
         return redirect()->intended(route('dashboard'));
+        // return redirect()->intended(RouteServiceProvider::HOME);
     }
 
     /**

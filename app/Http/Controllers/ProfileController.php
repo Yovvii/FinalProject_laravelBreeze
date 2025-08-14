@@ -45,7 +45,7 @@ class ProfileController extends Controller
     {
         // Validasi input
         $request->validate([
-            'current_password' => ['request', 'string'],
+            'current_password' => ['required', 'string'],
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
@@ -58,7 +58,10 @@ class ProfileController extends Controller
         $user->password = Hash::make($request->password);
         $user->save();
 
-        return back()->with('success', 'Password berhasil diubah.');
+        // return back()->with('success', 'Password berhasil diubah.');
+        return redirect()->route('dashboard')
+                        ->with('success', 'Password berhasil diubah.')
+                        ->with('password_updated_success', true);
     }
 
     /**
