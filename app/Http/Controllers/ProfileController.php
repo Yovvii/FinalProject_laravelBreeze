@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -54,14 +55,15 @@ class ProfileController extends Controller
         }
 
         /** @var \App\Models\User $user */
-        $user = Auth::user();
-        $user->password = Hash::make($request->password);
-        $user->save();
+        $request->user()->forceFill([
+            'password' => Hash::make($request->password),
+        ])->save();
 
-        // return back()->with('success', 'Password berhasil diubah.');
-        return redirect()->route('dashboard')
-                        ->with('success', 'Password berhasil diubah.')
-                        ->with('password_updated_success', true);
+        $request->user()->siswa->forceFill([
+            'password_changed_at' => Carbon::now(),
+        ])->save();
+
+        return redirect()->route('dashboard')->with('success', "Password berhasil diubah.");
     }
 
     /**

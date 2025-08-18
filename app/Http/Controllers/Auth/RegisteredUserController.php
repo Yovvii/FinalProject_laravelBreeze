@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Siswa;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use App\Models\TimelineProgress;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +41,7 @@ class RegisteredUserController extends Controller
 
         $tanggal_lahir = Carbon::createFromFormat('Y-m-d', $request->tanggal_lahir)->format('dmY');
 
-        // 1. Buat akun user
+        // Buat akun user
         $user = User::create([
             'name' => $request->name,
             'email' => null,
@@ -48,7 +49,12 @@ class RegisteredUserController extends Controller
             'role' => 'siswa',
         ]);
 
-        // 2.Buat data siswa
+        TimelineProgress::create([
+            'user_id' => $user->id,
+            'current_step' => 1,
+        ]);
+
+        //Buat data siswa
         Siswa::create([
             'user_id' => $user->id,
             'nisn' => $request->nisn,

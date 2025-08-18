@@ -13,6 +13,7 @@ class Siswa extends Model
         'user_id',
         'nisn',
         'tanggal_lahir',
+        'password_changed_at',
     ];
 
     public function user()

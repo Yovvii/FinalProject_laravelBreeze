@@ -22,6 +22,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'password_changed_at',
     ];
 
     /**
@@ -50,5 +51,10 @@ class User extends Authenticatable
     public function siswa(): HasOne
     {
         return $this->hasOne(Siswa::class);
+    }
+
+    public function timelineProgress(): HasOne
+    {
+        return $this->hasOne(TimelineProgress::class);
     }
 }

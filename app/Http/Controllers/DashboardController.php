@@ -10,12 +10,16 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::user()->fresh();
 
         $siswa = $user->siswa;
+
+        $isPasswordChanged = !is_null($siswa->password_changed_at);
         $tanggal_lahir = $siswa->tanggal_lahir;
         $tanggal_lahir_formatted = Carbon::parse($tanggal_lahir)->format('dmY');
 
-        return view('dashboard', compact('user', 'siswa', 'tanggal_lahir_formatted'));
+        $currentStep = $user->timelineProgress->current_step ?? 1;
+
+        return view('dashboard', compact('user', 'siswa', 'tanggal_lahir_formatted','isPasswordChanged', 'currentStep'));
     }
 }
