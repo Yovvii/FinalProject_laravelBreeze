@@ -11,10 +11,10 @@ class DashboardController extends Controller
     public function index()
     {
         $user = Auth::user()->fresh();
+        $isPasswordChanged = !is_null($user->password_changed_at);
 
         $siswa = $user->siswa;
 
-        $isPasswordChanged = !is_null($siswa->password_changed_at);
         $tanggal_lahir = $siswa->tanggal_lahir;
         $tanggal_lahir_formatted = Carbon::parse($tanggal_lahir)->format('dmY');
 

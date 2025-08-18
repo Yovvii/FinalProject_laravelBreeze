@@ -57,9 +57,6 @@ class ProfileController extends Controller
         /** @var \App\Models\User $user */
         $request->user()->forceFill([
             'password' => Hash::make($request->password),
-        ])->save();
-
-        $request->user()->siswa->forceFill([
             'password_changed_at' => Carbon::now(),
         ])->save();
 

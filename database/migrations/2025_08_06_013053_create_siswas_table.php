@@ -29,7 +29,6 @@ return new class extends Migration
             $table->string('kebutuhan_k')->nullable();
             $table->string('sertifikat')->nullable();
             
-            $table->timestamp('password_changed_at')->nullable();
             $table->boolean('data_diri_completed')->default(false);
             $table->boolean('rapor_completed')->default(false);
             
