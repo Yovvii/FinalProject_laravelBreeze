@@ -11,8 +11,6 @@ class TimelineController extends Controller
     {
         $currentStep = $request->input('step', 1);
 
-        $user = Auth::user();
-
         return view('account.timeline', compact('currentStep'));
     }
 

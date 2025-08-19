@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user()->fresh();
         $isPasswordChanged = !is_null($user->password_changed_at);
@@ -18,7 +18,7 @@ class DashboardController extends Controller
         $tanggal_lahir = $siswa->tanggal_lahir;
         $tanggal_lahir_formatted = Carbon::parse($tanggal_lahir)->format('dmY');
 
-        $currentStep = $user->timelineProgress->current_step ?? 1;
+        $currentStep = $request->input('step', 1);
 
         return view('dashboard', compact('user', 'siswa', 'tanggal_lahir_formatted','isPasswordChanged', 'currentStep'));
     }

@@ -147,10 +147,10 @@
                     </div>
                 </div>
                 <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kelurahan/Desa Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
+                    <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Akta Kelahiran</label>
+                    <div class="mt-2 border border-gray-500 block w-full rounded-md py-1">
+                        <input id="password_confirmation" type="file" name="password_confirmation" autocomplete="family-name" 
+                        class="rounded-md w-full bg-white px-3 text-xs text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
                     </div>
                 </div>
 

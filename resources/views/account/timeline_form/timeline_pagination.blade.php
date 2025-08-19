@@ -1,15 +1,23 @@
-{{-- <nav class="flex justify-center" aria-label="Progress">
-    @if ($currentStep > 1)
-    <a href="{{ route('timeline.show'), ['step' => $currentStep - 1] }}"
-        class="px-4 py-2 border rounded">
-        Sebelunya
-    </a>
-    @endif
+<nav class="flex justify-center mt-10 mb-5 space-x-4">
+    {{-- Tombol "Sebelumnya" --}}
+    <button 
+        type="button" 
+        class="px-4 py-2 text-black bg-white border border-gray-800 rounded-2xl hover:bg-gray-100 hover:border-gray-500
+        disabled:bg-gray-100 disabled:border-gray-400 disabled:text-gray-500"
+        @if ($currentStep <= 1) disabled @endif
+        onclick="window.location.href='{{ route('dashboard', ['step' => $currentStep - 1]) }}'"
+    >
+        < Sebelumnya
+    </button>
 
-    @if ($currentStep < 4)
-    <a href="{{ route('timeline.show'), ['step' => $currentStep + 1] }}"
-        class="px-4 py-2 border rounded">
-        Selanjutnya
-    </a>
-    @endif
-</nav> --}}
+    {{-- Tombol "Selanjutnya" --}}
+    <button 
+        type="button" 
+        class="px-4 py-2 text-black bg-white border border-gray-800 rounded-2xl hover:bg-gray-100 hover:border-gray-500
+        disabled:bg-gray-100 disabled:border-gray-400 disabled:text-gray-500"
+        @if ($currentStep >= 4) disabled @endif
+        onclick="window.location.href='{{ route('dashboard', ['step' => $currentStep + 1]) }}'"
+    >
+        Selanjutnya >
+    </button>
+</nav>
