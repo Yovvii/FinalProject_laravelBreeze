@@ -3,6 +3,13 @@
     <div class="bg-white p-4 rounded-lg">
         <div class="p-3 bg-blue-100 rounded-lg ">
             Selamat datang <span class="font-semibold">{{ Auth::user()->name }}</span>
+            <p class="mt-2 text-sm/6"><span class="font-bold">Perhatian! Hindari Penipuan!</span>
+                Harap berhati-hati terhadap pihak yang meminta uang dengan mengatasnamakan panitia. Pastikan Anda hanya mengakses informasi dari situs web resmi ini.
+                <span class="font-bold">Pelaksanaan SPMB 2026/2027 GRATIS & bebas dari segala macam bentuk percaloan !!!</span>
+            </p>
+            <hr class="my-4 border-gray-400"> <p class="text-xs text-gray-500">
+                Panitia SPMB Kabupaten Purbalingga
+            </p>
         </div>
     </div>
 </div>
