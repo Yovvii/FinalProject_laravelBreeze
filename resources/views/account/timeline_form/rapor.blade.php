@@ -1,160 +1,200 @@
-<div class="border border-gray-400 p-6 rounded-lg">
-    <div>
-        Data <span class="font-bold">Rapor</span>
-    </div>
+<div class="border bg-orange-100 px-6 py-4 rounded-lg">
+    <p class="text-gray-500">
+        Isi nilai rapor semester 1 sampai 5. Pastikan semua kolom terisi dengan benar. Unggah juga file rapor per-semester dalam format PDF, ukuran maksimal 500 KB.
+    </p>
+</div>
 
-    <form method="POST" action="">
-        @csrf
-        @method('PATCH')
 
-        <div class="space-y-10">
-            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
-                
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->name }}"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+<div class="border bg-blue-100 p-6 rounded-lg mt-4">
+        <div>
+            <p class="font-bold mb-2">Data Nilai Rapor Semester 1</p>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Matematika</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-3">
-                    <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Upload Foto</label>
-                    <div class="mt-2 border border-gray-500 block w-full rounded-md py-1">
-                        <input id="password_confirmation" type="file" name="password_confirmation" autocomplete="family-name" 
-                        class="rounded-md w-full bg-white px-3 text-xs text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Indonesia</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">NISN</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->siswa->nisn }}"
-                        class="block w-full rounded-md bg-gray-300 px-3 py-1.5 text-base text-gray-500 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Inggris</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Jenis Kelamin</label>
-                    <div class="mt-2">
-                        <select name="jenis_kelamin" id="jenis_kelamin"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
-                            <option value="laki-laki">Laki-Laki</option>
-                            <option value="perempuan">Perempuan</option>
-                        </select>
-                    </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Alam</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Tanggal Lahir</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->siswa->tanggal_lahir }}"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                {{-- <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Sosial</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div> --}}
+                <div class="sm:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester 1 (PDF)</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kabupaten</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kecamatan Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kelurahan/Desa Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                
-                <div class="sm:col-span-6">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Alamat Lengkap</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nomor KK</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">NIK</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nomor HP</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap Ayah</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap Ibu</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Email Pribadi</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Agama</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kebutuhan Khusus</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Sekolah Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-3">
-                    <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Akta Kelahiran</label>
-                    <div class="mt-2 border border-gray-500 block w-full rounded-md py-1">
-                        <input id="password_confirmation" type="file" name="password_confirmation" autocomplete="family-name" 
-                        class="rounded-md w-full bg-white px-3 text-xs text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
-                </div>
-
             </div>
         </div>
-        
-    </form>
+</div>
+
+
+<div class="border bg-blue-100 p-6 rounded-lg mt-4">
+        <div>
+            <p class="font-bold mb-2">Data Nilai Rapor Semester 2</p>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Matematika</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Indonesia</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Inggris</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Alam</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                {{-- <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Sosial</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div> --}}
+                <div class="sm:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester 2 (PDF)</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<div class="border bg-blue-100 p-6 rounded-lg mt-4">
+        <div>
+            <p class="font-bold mb-2">Data Nilai Rapor Semester 3</p>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Matematika</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Indonesia</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Inggris</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Alam</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                {{-- <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Sosial</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div> --}}
+                <div class="sm:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester 3 (PDF)</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<div class="border bg-blue-100 p-6 rounded-lg mt-4">
+        <div>
+            <p class="font-bold mb-2">Data Nilai Rapor Semester 4</p>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Matematika</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Indonesia</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Inggris</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Alam</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                {{-- <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Sosial</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div> --}}
+                <div class="sm:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester 4 (PDF)</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+            </div>
+        </div>
+</div>
+
+
+<div class="border bg-blue-100 p-6 rounded-lg mt-4">
+        <div>
+            <p class="font-bold mb-2">Data Nilai Rapor Semester 5</p>
+            <div class="grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Matematika</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Indonesia</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Bahasa Inggris</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Alam</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                {{-- <div class="sm:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Ilmu Pengetahuan Sosial</label>
+                    <input type="number" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div> --}}
+                <div class="sm:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester 5 (PDF)</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap" value="0"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+            </div>
+        </div>
 </div>

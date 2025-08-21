@@ -9,149 +9,114 @@
         @method('PATCH')
 
         <div class="space-y-10">
-            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+            <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
                 
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->name }}"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Lengkap</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ Auth::user()->name }}"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-3">
-                    <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Upload Foto</label>
-                    <div class="mt-2 border border-gray-500 block w-full rounded-md py-1">
-                        <input id="password_confirmation" type="file" name="password_confirmation" autocomplete="family-name" 
-                        class="rounded-md w-full bg-white px-3 text-xs text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Upload Foto</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">NISN</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->siswa->nisn }}"
-                        class="block w-full rounded-md bg-gray-300 px-3 py-1.5 text-base text-gray-500 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-gray text-gray-500">NISN</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ Auth::user()->siswa->nisn }}"
+                    class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Jenis Kelamin</label>
-                    <div class="mt-2">
-                        <select name="jenis_kelamin" id="jenis_kelamin"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6">
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Jenis Kelamin</label>
+                    <select name="jenis_kelamin" id="jenis_kelamin"
+                        class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                             <option value="laki-laki">Laki-Laki</option>
                             <option value="perempuan">Perempuan</option>
-                        </select>
-                    </div>
+                    </select>
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Tanggal Lahir</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name" value="{{ Auth::user()->siswa->tanggal_lahir }}"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kabupaten</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kecamatan Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kelurahan/Desa Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Tanggal Lahir</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" value="{{ Auth::user()->siswa->tanggal_lahir }}"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
                 
-                <div class="sm:col-span-6">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Alamat Lengkap</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Kabupaten/Kota Asal</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Asal Kabupaten/Kota"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Kecamatan Asal</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Asal Kecamatan"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Kelurahan/Desa Asal</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Asal Desa/Kelurahan"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                
+                <div class="sm:col-span-6 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Alamat Lengkap</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Alamat Rumah"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nomor KK</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nomor KK</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="No KK"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">NIK</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nomor Induk Kependudukan</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="NIK"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nomor HP</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nomor Hp/Telephone</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="No HP"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap Ayah</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Lengkap Ayah</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Nama Ayah"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Lengkap Ibu</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Lengkap Ibu</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Nama Ibu"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Email Pribadi</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Agama</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
-                </div>
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Kebutuhan Khusus</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Email Pribadi</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="E-mail"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
-                <div class="sm:col-span-3">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Sekolah Asal</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Agama</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Pilih Agama"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-3">
-                    <label for="password_confirmation" class="block text-sm/6 font-medium text-gray-900">Akta Kelahiran</label>
-                    <div class="mt-2 border border-gray-500 block w-full rounded-md py-1">
-                        <input id="password_confirmation" type="file" name="password_confirmation" autocomplete="family-name" 
-                        class="rounded-md w-full bg-white px-3 text-xs text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />
-                    </div>
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Kebutuhan Khusus</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Berkebutuhan Khusus"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Sekolah Asal</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Asal Sekolah"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                </div>
+                <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Akta Kelahiran</label>
+                    <input type="file" name="nama_lengkap" id="nama_lengkap"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
             </div>
@@ -171,43 +136,33 @@
         @method('PATCH')
 
         <div class="space-y-10">
-            <div class="mt-10 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
+            <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-6">
                 
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Nama Orang Tua/Wali</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Orang Tua/Wali</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Nama Lengkap"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Tempat Lahir Orang Tua/Wali</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Tempat Lahir Orang Tua/Wali</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Tempat Lahir"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Tanggal Lahir Orang Tua/Wali</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Tanggal Lahir Orang Tua/Wali</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Tanggal Lahir"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
-                <div class="sm:col-span-2">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Pekerjaan Orang Tua/Wali</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Pekerjaan Orang Tua/Wali</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Pekerjaan"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
-                <div class="sm:col-span-4">
-                    <label for="nama" class="block text-sm/6 font-medium text-gray-900">Alamat Orang Tua/Wali</label>
-                    <div class="mt-2">
-                        <input id="nama" type="text" name="nama" autocomplete="family-name"
-                        class="block w-full rounded-md bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6" />                         
-                    </div>
+                <div class="sm:col-span-4 relative px-3 pt-3 border border-gray-400 rounded-lg">
+                    <label for="nama_lengkap" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Alamat Orang Tua/Wali</label>
+                    <input type="text" name="nama_lengkap" id="nama_lengkap" placeholder="Alamat Lengkap"
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 </div>
 
             </div>
