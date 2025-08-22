@@ -18,20 +18,23 @@
 
         @include('layouts.notification')
 
-        <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            @include('layouts.navigation')
+        @include('layouts.navbar')
+
+        <div class="lg:flex min-h-screen bg-gray-100 dark:bg-gray-900">
+
+            @include('layouts.sidebar')
 
             <!-- Page Heading -->
-            @isset($header)
-                <header class="bg-white dark:bg-gray-800 shadow">
-                    <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                        {{ $header }}
-                    </div>
-                </header>
-            @endisset
-
+            {{-- @isset($header)
+            <header class="bg-white dark:bg-gray-800 shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+            @endisset --}}
+            
             <!-- Page Content -->
-            <main>
+            <main class="flex-1 oveflow-y-auto lg:ml-64">
                 {{ $slot }}
             </main>
         </div>

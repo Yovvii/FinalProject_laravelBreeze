@@ -24,9 +24,9 @@
             @elseif ($currentStep == 2)
                 @include('account.timeline_form.rapor')
             @elseif ($currentStep == 3)
-                @include('account.timeline_form.surat_keterangan_lulus')
-            @elseif ($currentStep == 4)
                 @include('account.timeline_form.surat_pernyataan')                
+            @elseif ($currentStep == 4)
+                @include('account.timeline_form.surat_keterangan_lulus')
             @endif
 
             <div class="mt-4">

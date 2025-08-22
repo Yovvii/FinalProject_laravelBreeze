@@ -149,3 +149,42 @@ return new class extends Migration
         });
     }
 };
+
+
+// BAGIAN NAVIGASI
+<nav x-data="{ open: false }" class="w-64 bg-white dark:bg-gray-800 border-r border-gray-100 dark:border-gray-700">
+    <div class="flex flex-col h-full p-4">
+        <div class="shrink-0 flex items-center">
+            <a href="{{ route('dashboard') }}">
+                <x-application-logo class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200" />
+            </a>
+            <span class="ms-3 text-lg font-bold">{{ __('Dashboard') }}</span>
+        </div>
+
+        <div class="mt-6 flex-1 space-y-1">
+            <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
+                {{ __('Dashboard') }}
+            </x-nav-link>
+            {{-- Tambahkan link lain di sini --}}
+            <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                {{ __('Profile') }}
+            </x-nav-link>
+        </div>
+
+        <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-600">
+            <div class="space-y-1">
+                <div>{{ Auth::user()->name }}</div>
+                <div class="text-sm text-gray-500">{{ Auth::user()->email }}</div>
+            </div>
+            <div class="mt-3 space-y-1">
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <x-nav-link :href="route('logout')"
+                            onclick="event.preventDefault(); this.closest('form').submit();">
+                        {{ __('Log Out') }}
+                    </x-nav-link>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
