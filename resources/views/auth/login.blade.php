@@ -38,8 +38,8 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a href="{{ route('register') }}" class="text-[14px] font-medium text-white bg-gray-800 hover:bg-gray-700 dark:text-gray-800 dark:bg-gray-200 dark:hover:bg-white py-2 px-3 rounded-md">
-                Registrasi
+            <a href="{{ route('register') }}" class="tracking-wider text-[14px] font-medium text-white bg-gray-800 hover:bg-gray-700 dark:text-gray-800 dark:bg-gray-200 dark:hover:bg-white py-2 px-3 rounded-md">
+                REGISTRASI
             </a>
 
             <x-primary-button class="ms-3">
