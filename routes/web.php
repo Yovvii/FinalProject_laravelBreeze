@@ -26,7 +26,7 @@ Route::middleware('auth')->group(function () {
     
     Route::patch('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
-    Route::get('/dashboard/{step?}', [PendaftaranController::class, 'showTimeline'])->name('timeline');
+    Route::get('/dashboard', [PendaftaranController::class, 'showTimeline'])->name('dashboard');
     Route::post('/pendaftaran/simpan-data', [PendaftaranController::class, 'saveRegistration'])->name('save.registration');
 });
 

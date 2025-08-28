@@ -6,12 +6,12 @@
 
         <div class="w-full grid place-items-center">
             <div class="relative w-20">
-                <img src="{{ asset('storage/profile_murid/dummy_profile.jpg') }}" alt=""
+                <img src="{{ $siswa && $siswa->foto ? asset('storage/' . $siswa->foto) : asset('storage/profile_murid/avatar_empty.jpg') }}" alt=""
                 class="rounded-full">
             </div>
 
             <span class="mt-2 font-black">{{ Auth::user()->name }}</span>
-            <span class="font-light text-sm">{{ Auth::user()->siswa->nisn }}</span>
+            <span class="font-light text-sm tracking-wide">{{ Auth::user()->siswa->nisn }}</span>
         </div>
 
         <nav class="flex-1 mt-6 px-5">

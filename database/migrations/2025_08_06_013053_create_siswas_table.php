@@ -30,7 +30,6 @@ return new class extends Migration
             $table->string('nama_ibu')->nullable();
             $table->string('agama')->nullable();
             $table->string('kebutuhan_k')->nullable();
-            $table->string('sekolah_asals_id')->nullable();
             $table->string('akta')->nullable();
             
             $table->boolean('data_diri_completed')->default(false);

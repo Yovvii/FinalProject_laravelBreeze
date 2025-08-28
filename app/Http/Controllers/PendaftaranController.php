@@ -2,37 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Siswa;
 use App\Models\Ortu;
+use App\Models\Siswa;
+use App\Models\SekolahAsal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
 class PendaftaranController extends Controller
 {
-    public function showTimeline(Request $request)
+    public function showTimeline(Request $request, $pathStep = null)
     {
         $progress = Auth::user()->timelineProgress->current_step ?? 1;
-
-        $currentStep = $request->input('step', $progress);
+        $currentStep = $pathStep ?? $request->query('step', $progress);
+        $currentStep = (int) $currentStep;
         if ($currentStep > $progress) {
             $currentStep = $progress;
         }
 
         /** @var \App\Models\User $user */
         $user = Auth::user()->load('siswa.ortu');
+        $siswa = $user->siswa;
+        $ortu  = $siswa->ortu ?? null;
+        $sekolahAsals = SekolahAsal::all();
 
         return view('dashboard', [
             'currentStep' => (int)$currentStep,
-            'siswa' => $user->siswa,
+            'siswa' => $siswa,
+            'ortu' => $ortu,
+            'sekolahAsals' => $sekolahAsals,
             'isPasswordChanged' => true,
         ]);
+
     }
 
     public function saveRegistration(Request $request)
     {
-        // dd($request->all());
-
         $step = $request->input('current_step');
 
         switch ($step) {
@@ -66,8 +71,8 @@ class PendaftaranController extends Controller
     {
         $validatedData = $request->validate([
             // file
-            'foto' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'akta' => 'required|file|mimes:pdf|max:2048',
+            'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'akta' => 'nullable|file|mimes:pdf|max:2048',
 
             // data siswa
             'jenis_kelamin' => 'nullable|string',
@@ -77,12 +82,13 @@ class PendaftaranController extends Controller
             'alamat' => 'nullable|string',
             'no_kk' => 'nullable|string',
             'nik' => 'nullable|string',
+            'no_hp' => 'nullable|string',
             'nama_ayah' => 'nullable|string',
             'nama_ibu' => 'nullable|string',
             'email' => 'nullable|string',
             'agama' => 'nullable|string',
             'kebutuhan_k' => 'nullable|string',
-            'sekolah_asals_id' => 'nullable|string', // nanti diubah
+            'sekolah_asal_id' => 'required|exists:sekolah_asals,id', // nanti diubah
             
             // data wali
             'nama_wali' => 'nullable|string|max:255',
@@ -94,27 +100,39 @@ class PendaftaranController extends Controller
 
         DB::transaction(function () use ($validatedData, $request) {
             $user = Auth::user();
+
+            $user->email = $validatedData['email'];
+            $user->save();
+
             $siswa = $user->siswa;
 
-            if (!$siswa) {
-                $siswa = new Siswa();
-                $siswa->user_id = $user->id;
+            $siswa = $user->siswa ?? new Siswa();
+            $siswa->user_id = $user->id;
+
+            if ($request->hasFile('foto')) {
+                $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
+            }
+            if ($request->hasFile('akta')) {
+                $siswa->akta = $request->file('akta')->store('akta_murid', 'public');
             }
 
-            $pathFoto = $request->file('foto')->store('profile_murid', 'public');
-            $pathAkta = $request->file('akta')->store('akta_murid', 'public');
+            $siswaData = collect($validatedData)->except([
+                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta', 'email'
+            ])->toArray();
 
-            $siswa->fill($validatedData);
-            $siswa->foto = $pathFoto;
-            $siswa->akta = $pathAkta;
+            // dd($validatedData);
+
+            $siswa->fill($siswaData);
             $siswa->save();
 
-            $ortu = $siswa->ortu;
-            if (!$ortu) {
-                $ortu = new Ortu();
-                $ortu->siswa()->associate($siswa);
-            }
-            $ortu->fill($validatedData);
+            $ortu = $siswa->ortu ?? new Ortu();
+            $ortu->siswa()->associate($siswa);
+
+            $ortuData = $request->only([
+                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
+            ]);
+
+            $ortu->fill($ortuData);
             $ortu->save();
         });
 
