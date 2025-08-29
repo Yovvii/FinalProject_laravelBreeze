@@ -136,6 +136,6 @@ class PendaftaranController extends Controller
             $ortu->save();
         });
 
-        return redirect()->route('timeline', ['step' => 2])->with('success', 'Biodata berhasil disimpan.');
+        return redirect()->route('dashboard', ['step' => 2])->with('success', 'Biodata berhasil disimpan.');
     }
 }
