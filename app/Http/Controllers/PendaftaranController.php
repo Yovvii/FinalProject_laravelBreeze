@@ -10,6 +10,7 @@ use App\Models\RaporFile;
 use App\Models\SekolahAsal;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
@@ -33,13 +34,20 @@ class PendaftaranController extends Controller
         $ortu  = $siswa->ortu ?? null;
         $sekolahAsals = SekolahAsal::all();
         $mapels = Mapel::all();
+        $isPasswordChanged = Auth::user()->password_changed_at;
+        
+        $tanggal_lahir_formatted = null;
+        if ($siswa && $siswa->tanggal_lahir) {
+            $tanggal_lahir_formatted = Carbon::parse($siswa->tanggal_lahir)->format('dmY');
+        }
 
         return view('dashboard', [
             'currentStep' => (int)$currentStep,
             'siswa' => $siswa,
             'ortu' => $ortu,
             'sekolahAsals' => $sekolahAsals,
-            'isPasswordChanged' => true,
+            'isPasswordChanged' => $isPasswordChanged,
+            'tanggal_lahir_formatted' => $tanggal_lahir_formatted,
 
             'mapels' => $mapels,
             'semesters' => $user->semesters,
@@ -212,5 +220,5 @@ class PendaftaranController extends Controller
             Log::error('Error saat menyimpan rapor: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
-    }
+    }   
 }

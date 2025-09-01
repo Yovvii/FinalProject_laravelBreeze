@@ -42,6 +42,33 @@ class ProfileController extends Controller
         return Redirect::route('profile.edit')->with('success', 'profile-updated');
     }
 
+    // public function updatePassword(Request $request)
+    // {
+    //     // Validasi input
+    //     $request->validate([
+    //         'current_password' => ['required', 'string'],
+    //         'password' => ['required', 'confirmed', Password::defaults()],
+    //     ]);
+
+    //     if (!Hash::check($request->current_password, Auth::user()->password)) {
+    //         return back()->withErrors(['current_password' => 'Password lama salah.']);
+    //     }
+
+    //     /** @var \App\Models\User $user */
+    //     $request->user()->forceFill([
+    //         'password' => Hash::make($request->password),
+    //         'password_changed_at' => Carbon::now(),
+    //     ])->save();
+
+    //     return redirect()->route('dashboard')->with('success', "Password berhasil diubah.");
+    // }
+
+    /**
+     * Update the user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function updatePassword(Request $request)
     {
         // Validasi input
