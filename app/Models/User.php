@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
@@ -56,5 +57,15 @@ class User extends Authenticatable
     public function timelineProgress(): HasOne
     {
         return $this->hasOne(TimelineProgress::class);
+    }
+
+    public function semesters(): HasMany
+    {
+        return $this->hasMany(Semester::class);
+    }
+
+    public function raporFiles(): HasMany
+    {
+        return $this->hasMany(RaporFile::class, 'user_id', 'id');
     }
 }

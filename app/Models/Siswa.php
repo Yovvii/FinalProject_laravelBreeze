@@ -28,7 +28,7 @@ class Siswa extends Model
         'agama',
         'kebutuhan_k',
         'sekolah_asal_id', // ada foreign key tabel sekolah_asals
-        'akta',
+        'akta_file',
         'foto',
       ];
       
