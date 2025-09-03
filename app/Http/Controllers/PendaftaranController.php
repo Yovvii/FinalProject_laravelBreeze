@@ -71,8 +71,8 @@ class PendaftaranController extends Controller
                 $this->_saveSuratPernyataan($request);
                 break;
             case 4:
-                // $this->_saveSuratKeteranganLulus($request);
-                // break;
+                $this->_saveSuratKeteranganLulus($request);
+                break;
         }
 
         $progress = Auth::user()->timelineProgress;
@@ -247,6 +247,34 @@ class PendaftaranController extends Controller
                     Storage::disk('public')->delete($siswa->surat_pernyataan);
                 }
                 $siswa->surat_pernyataan = $request->file('surat_pernyataan')->store('surat_pernyataan', 'public');
+                $siswa->save();
+            }
+        });
+    }
+    
+    public function _saveSuratKeteranganLulus(Request $request)
+    {
+        $validated = $request->validate([
+            'surat_keterangan_lulus' => 'nullable|file|mimes:pdf|max:2048',
+            'ijazah_file' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+
+        DB::transaction(function () use ($validated, $request) {
+            $user = Auth::user();
+            $siswa = $user->siswa;
+
+            if ($request->hasFile('surat_keterangan_lulus')) {
+                if ($siswa->surat_keterangan_lulus && Storage::disk('public')->exists($siswa->surat_keterangan_lulus)) {
+                    Storage::disk('public')->delete($siswa->surat_keterangan_lulus);
+                }
+                $siswa->surat_keterangan_lulus = $request->file('surat_keterangan_lulus')->store('surat_keterangan_lulus', 'public');
+                $siswa->save();
+            }
+            if ($request->hasFile('ijazah_file')) {
+                if ($siswa->ijazah_file && Storage::disk('public')->exists($siswa->ijazah_file)) {
+                    Storage::disk('public')->delete($siswa->ijazah_file);
+                }
+                $siswa->ijazah_file = $request->file('ijazah_file')->store('ijazah_file', 'public');
                 $siswa->save();
             }
         });
