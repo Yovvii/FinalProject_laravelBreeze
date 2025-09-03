@@ -32,8 +32,9 @@ return new class extends Migration
             $table->string('kebutuhan_k')->nullable();
             $table->string('akta_file')->nullable();
             
-            $table->boolean('data_diri_completed')->default(false);
-            $table->boolean('rapor_completed')->default(false);
+            $table->string('surat_pernyataan')->nullable();
+            $table->string('surat_keterangan_lulus')->nullable();
+            $table->string('ijazah_file')->nullable();
             
             $table->timestamps();
         });

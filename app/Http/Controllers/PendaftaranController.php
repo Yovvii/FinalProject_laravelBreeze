@@ -68,8 +68,8 @@ class PendaftaranController extends Controller
                 $this->_saveRapor($request);
                 break;
             case 3:
-                // $this->_saveSuratPernyataan($request);
-                // break;
+                $this->_saveSuratPernyataan($request);
+                break;
             case 4:
                 // $this->_saveSuratKeteranganLulus($request);
                 // break;
@@ -108,7 +108,7 @@ class PendaftaranController extends Controller
             'email' => 'nullable|string',
             'agama' => 'nullable|string',
             'kebutuhan_k' => 'nullable|string',
-            'sekolah_asal_id' => 'required|exists:sekolah_asals,id', // nanti diubah
+            'sekolah_asal_id' => 'nullable|integer',
             
             // data wali
             'nama_wali' => 'nullable|string|max:255',
@@ -129,12 +129,26 @@ class PendaftaranController extends Controller
             $siswa = $user->siswa ?? new Siswa();
             $siswa->user_id = $user->id;
 
+            // if ($request->hasFile('foto')) {
+            //     $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
+            // }
+            // if ($request->hasFile('akta')) {
+            //     $siswa->akta = $request->file('akta')->store('akta_murid', 'public');
+            // }
+
             if ($request->hasFile('foto')) {
+                if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
+                    Storage::disk('public')->delete($siswa->foto);
+                }
                 $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
             }
-            if ($request->hasFile('akta')) {
-                $siswa->akta = $request->file('akta')->store('akta_murid', 'public');
+            if ($request->hasFile('akta_file')) {
+                if ($siswa->akta_file && Storage::disk('public')->exists($siswa->akta_file)) {
+                    Storage::disk('public')->delete($siswa->akta_file);
+                }
+                $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
             }
+            
 
             $siswaData = collect($validatedData)->except([
                 'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta', 'email'
@@ -220,5 +234,25 @@ class PendaftaranController extends Controller
             Log::error('Error saat menyimpan rapor: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
-    }   
+    }
+
+    public function _saveSuratPernyataan(Request $request)
+    {
+        $validated = $request->validate([
+            'surat_pernyataan' => 'nullable|file|mimes:pdf|max:2048',
+            ]);
+
+        DB::transaction(function () use ($validated, $request) {
+            $user = Auth::user();
+            $siswa = $user->siswa;
+
+            if ($request->hasFile('surat_pernyataan')) {
+                if ($siswa->surat_pernyataan && Storage::disk('public')->exists($siswa->surat_pernyataan)) {
+                    Storage::disk('public')->delete($siswa->surat_pernyataan);
+                }
+                $siswa->surat_pernyataan = $request->file('surat_pernyataan')->store('surat_pernyataan', 'public');
+                $siswa->save();
+            }
+        });
+    }
 }

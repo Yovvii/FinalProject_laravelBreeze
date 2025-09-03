@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PendaftaranController;
@@ -22,12 +23,14 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['au
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('logout');
     
     Route::patch('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
     Route::get('/dashboard', [PendaftaranController::class, 'showTimeline'])->name('dashboard');
     Route::post('/pendaftaran/simpan-data', [PendaftaranController::class, 'saveRegistration'])->name('save.registration');
+    Route::get('/surat_pernyataan', [DocumentController::class, 'showSuratPernyataan'])->name('surat_pernyataan');
+    Route::get('/download_surat', [DocumentController::class, 'downloadPdf'])->name('download.surat.pernyataan');
 });
 
 require __DIR__.'/auth.php';

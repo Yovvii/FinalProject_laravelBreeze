@@ -30,6 +30,10 @@ class Siswa extends Model
         'sekolah_asal_id', // ada foreign key tabel sekolah_asals
         'akta_file',
         'foto',
+
+        'surat_pernyataan',
+        'surat_keterangan_lulus',
+        'ijazah_file',
       ];
       
     public function user(): BelongsTo
