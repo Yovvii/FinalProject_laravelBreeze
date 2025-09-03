@@ -129,13 +129,6 @@ class PendaftaranController extends Controller
             $siswa = $user->siswa ?? new Siswa();
             $siswa->user_id = $user->id;
 
-            // if ($request->hasFile('foto')) {
-            //     $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
-            // }
-            // if ($request->hasFile('akta')) {
-            //     $siswa->akta = $request->file('akta')->store('akta_murid', 'public');
-            // }
-
             if ($request->hasFile('foto')) {
                 if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
                     Storage::disk('public')->delete($siswa->foto);
@@ -170,7 +163,7 @@ class PendaftaranController extends Controller
             $ortu->save();
         });
 
-        return redirect()->route('dashboard', ['step' => 2])->with('success', 'Biodata berhasil disimpan.');
+        return redirect()->route('dashboard');
     }
 
     private function _saveRapor(Request $request)
@@ -187,23 +180,26 @@ class PendaftaranController extends Controller
 
             $userId = Auth::id();
             $dataNilai = $validated['nilai'];
-
-            Semester::where('user_id', $userId)->delete();
-            RaporFile::where('user_id', $userId)->delete();
-
             $mapels = Mapel::all();
 
             foreach ($dataNilai as $semester => $nilaiMapel) {
                 if ($request->hasFile("rapor_file.{$semester}")) {
                     $file = $request->file("rapor_file.{$semester}");
-                    $fileName = $file->hashName('rapor_murid/' . $userId);
-                    Storage::disk('public')->put($fileName, file_get_contents($file));
 
-                    RaporFile::create([
-                        'user_id' => $userId,
-                        'semester' => $semester,
-                        'file_rapor' => $fileName
-                    ]);
+                    $existingRaporFile = RaporFile::where('user_id', $userId)->where('semester', $semester)->first();
+
+                    if ($existingRaporFile && Storage::disk('public')->exists($existingRaporFile->file_rapor)) {
+                        Storage::disk('public')->delete($existingRaporFile->file_rapor);
+                    }
+                    
+                    $fileName = $file->hashName('rapor_murid/' . $userId);
+                    $file->storeAs('rapor_murid/' . $userId, $fileName, 'public');
+
+                    RaporFile::updateOrCreate(
+                        ['user_id' => $userId,
+                        'semester' => $semester],
+                        ['file_rapor' => $fileName]
+                    );
                 }
 
                 foreach ($nilaiMapel as $namaMapel => $nilai) {
@@ -214,12 +210,12 @@ class PendaftaranController extends Controller
                     })->id ?? null;
 
                     if ($nilai !== null && $mapelId !== null) {
-                        Semester::create([
-                            'user_id' => $userId,
+                        Semester::updateOrCreate(
+                            ['user_id' => $userId,
                             'mapel_id' => $mapelId,
-                            'semester' => $semester,
-                            'nilai_semester' => $nilai
-                        ]);
+                            'semester' => $semester],
+                            ['nilai_semester' => $nilai]
+                        );
                     }
                 }
             }
