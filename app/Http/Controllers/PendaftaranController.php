@@ -41,6 +41,13 @@ class PendaftaranController extends Controller
             $tanggal_lahir_formatted = Carbon::parse($siswa->tanggal_lahir)->format('dmY');
         }
 
+        $raporData = [];
+        for ($semester = 1; $semester <= 5; $semester++) {
+            $raporData[$semester] = [
+                'file_rapor' => $user->raporFiles->firstWhere('semester', $semester),
+            ];
+        }
+
         return view('dashboard', [
             'currentStep' => (int)$currentStep,
             'siswa' => $siswa,
@@ -51,6 +58,7 @@ class PendaftaranController extends Controller
 
             'mapels' => $mapels,
             'semesters' => $user->semesters,
+            'raporData' => $raporData,
             'raporFiles' => $user->raporFiles,
         ]);
 
@@ -181,6 +189,7 @@ class PendaftaranController extends Controller
             $userId = Auth::id();
             $dataNilai = $validated['nilai'];
             $mapels = Mapel::all();
+            $rapor_file = RaporFile::all();
 
             foreach ($dataNilai as $semester => $nilaiMapel) {
                 if ($request->hasFile("rapor_file.{$semester}")) {
