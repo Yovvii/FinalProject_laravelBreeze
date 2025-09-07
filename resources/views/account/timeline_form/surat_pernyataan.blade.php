@@ -6,35 +6,35 @@
     <div class="space-y-5">
         <div class="mt-5 grid grid-cols-1 gap-x-6 gap-y-5 sm:grid-cols-8">
             
-            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
-                <label for="name" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Lengkap</label>
-                <input type="text" name="name" id="name" value="{{ Auth::user()->name }}"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
-            </div>
             <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
-                <label for="nisn" class="absolute left-3 px-1 text-xs bg-gray text-gray-500">NISN</label>
-                <input type="text" name="nisn" id="nisn" value="{{ Auth::user()->siswa->nisn }}"
+                <label for="name" class="absolute left-3 px-1 text-xs text-gray-500">Nama Lengkap</label>
+                <input type="text" name="name" id="name" value="{{ Auth::user()->name }}" readonly
                 class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
-            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
-                <label for="kabupaten" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Kabupaten/Kota Asal</label>
-                <input type="text" name="kabupaten" id="kabupaten" placeholder="Asal Kabupaten/Kota" value="{{ $siswa->kabupaten ?? '' }}"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                <label for="nisn" class="absolute left-3 px-1 text-xs text-gray-500">NISN</label>
+                <input type="text" name="nisn" id="nisn" value="{{ Auth::user()->siswa->nisn }}" readonly
+                class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
-            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
-                <label for="tanggal_lahir" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Tanggal Lahir</label>
-                <input type="text" name="tanggal_lahir" id="tanggal_lahir" value="{{ Auth::user()->siswa->tanggal_lahir }}"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                <label for="kabupaten" class="absolute left-3 px-1 text-xs text-gray-500">Kabupaten/Kota Asal</label>
+                <input type="text" name="kabupaten" id="kabupaten" placeholder="Asal Kabupaten/Kota" value="{{ $siswa->kabupaten ?? '' }}" readonly
+                class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
-            <div class="sm:col-span-6 relative px-3 pt-3 border border-gray-400 rounded-lg">
-                <label for="alamat" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Alamat Lengkap</label>
-                <input type="text" name="alamat" id="alamat" placeholder="Alamat Rumah" value="{{ $siswa->alamat ?? '' }}"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                <label for="tanggal_lahir" class="absolute left-3 px-1 text-xs text-gray-500">Tanggal Lahir</label>
+                <input type="text" name="tanggal_lahir" id="tanggal_lahir" value="{{ Auth::user()->siswa->tanggal_lahir }}" readonly
+                class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
-            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
-                <label for="nama_wali" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nama Orang Tua/Wali</label>
-                <input type="text" name="nama_wali" id="nama_wali" placeholder="Nama Lengkap" value="{{ $siswa->ortu->nama_wali ?? '' }}"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+            <div class="sm:col-span-6 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                <label for="alamat" class="absolute left-3 px-1 text-xs text-gray-500">Alamat Lengkap</label>
+                <input type="text" name="alamat" id="alamat" placeholder="Alamat Rumah" value="{{ $siswa->alamat ?? '' }}" readonly
+                class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
+            </div>
+            <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
+                <label for="nama_wali" class="absolute left-3 px-1 text-xs text-gray-500">Nama Orang Tua/Wali</label>
+                <input type="text" name="nama_wali" id="nama_wali" placeholder="Nama Lengkap" value="{{ $siswa->ortu->nama_wali ?? '' }}" readonly
+                class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
 
         </div>

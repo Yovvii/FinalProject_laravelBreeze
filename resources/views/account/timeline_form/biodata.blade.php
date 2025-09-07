@@ -27,7 +27,7 @@
             
             <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg bg-gray-300">
                 <label for="nisn" class="absolute left-3 px-1 text-xs bg-gray text-gray-500">NISN</label>
-                <input type="text" name="nisn" id="nisn" value="{{ Auth::user()->siswa->nisn }}"
+                <input type="text" name="nisn" id="nisn" value="{{ Auth::user()->siswa->nisn }}" readonly
                 class="bg-gray-300 block w-full px-1 mt-3 text-base text-gray-500 border-0 focus:ring-0 focus:outline-none">
             </div>
             <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
@@ -135,6 +135,9 @@
                 <label for="akta_file" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Akta Kelahiran</label>
                 <input type="file" name="akta_file" id="akta_file" value=""
                 class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                <div>
+                    
+                </div>
             </div>
 
         </div>

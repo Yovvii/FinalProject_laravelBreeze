@@ -163,7 +163,7 @@ class PendaftaranController extends Controller
             $ortu->save();
         });
 
-        return redirect()->route('dashboard');
+        return redirect()->route('dashboard',);
     }
 
     private function _saveRapor(Request $request)

@@ -1,4 +1,3 @@
-
 <div class="max-w-7xl mx-auto sm:px-4 lg:px-6 pt-5">
     <div class="bg-white p-4 rounded-lg">
         <div class="p-3 bg-blue-100 rounded-lg ">
@@ -20,9 +19,10 @@
 
             <form method="POST" action="{{ route('save.registration') }}" enctype="multipart/form-data">
                 @csrf
-
+                                
                 {{-- inii --}}
                 <input type="hidden" name="current_step" value="{{ $currentStep }}">
+                {{-- @include('account.progress_bar') --}}
             
                 {{-- Timeline Pendaftaran --}}
                 @if ($currentStep == 1)
