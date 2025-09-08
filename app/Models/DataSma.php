@@ -14,4 +14,9 @@ class DataSma extends Model
     protected $fillable = [
         'nama_sma',
     ];
+
+    public function akreditasi()
+    {
+        return $this->belongsTo(Akreditasi::class, 'akreditasi_id');
+    }
 }

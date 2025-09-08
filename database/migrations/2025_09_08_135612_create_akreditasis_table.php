@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sma_datas', function (Blueprint $table) {
+        Schema::create('akreditasis', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_sma');
-            $table->string('logo_sma');
-            $table->foreignId('akreditasi_id')->nullable()->constrained('akreditasis');
+            $table->string('jenis_akreditasi');
+            $table->string('warna_background');
+            $table->string('warna_text');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sma_datas');
+        Schema::dropIfExists('akreditasis');
     }
 };
