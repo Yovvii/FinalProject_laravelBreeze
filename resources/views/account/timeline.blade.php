@@ -33,6 +33,10 @@
                     @include('account.timeline_form.surat_pernyataan')                
                 @elseif ($currentStep == 4)
                     @include('account.timeline_form.surat_keterangan_lulus')
+                @elseif ($currentStep == 5)
+                    <div class="p-3 bg-green-100 rounded-lg font-bold">
+                        Yeyyy!!! Selamat Anda Sudah Menyelesaikan Tahap Registrasi Akun!
+                    </div>
                 @endif
                 
                 <div class="mt-4">
