@@ -179,7 +179,7 @@ class PendaftaranController extends Controller
         try {
             // Validasi data rapor
             $validated = $request->validate([
-                'nilai' => 'required|array',
+                'nilai' => 'required|array|max:100',
                 'rapor_file' => 'nullable|array',
                 'rapor_file.*' => 'nullable|mimes:pdf|max:1000'
             ]);

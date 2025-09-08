@@ -18,7 +18,7 @@
                     <div class="sm:col-span-6 xl:col-span-1 relative px-3 pt-3 bg-white rounded-lg">
                         <label for="nilai_{{ $semester }}_{{ Str::snake($mapel->nama_mapel) }}" class="absolute left-3 px-1 text-xs bg-white text-gray-700">{{ $mapel->nama_mapel }}</label>
                         <input type="number" name="nilai[{{ $semester }}][{{ Str::snake($mapel->nama_mapel) }}]" id="nilai_{{ $semester }}_{{ Str::snake($mapel->nama_mapel) }}"
-                               value="{{ old('nilai.' . $semester . '.' . Str::snake($mapel->nama_mapel), $nilaiUntukMapelIni) }}"
+                               value="{{ old('nilai.' . $semester . '.' . Str::snake($mapel->nama_mapel), $nilaiUntukMapelIni) }}" max="100"
                                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                     </div>
                 @endforeach
