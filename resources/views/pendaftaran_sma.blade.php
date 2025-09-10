@@ -25,9 +25,9 @@
                             </div>
                             <div class="flex my-auto">
                                 <p class="me-5 text-[16px] my-auto"><span class="font-bold">8.209</span> Pendaftar</p>
-                                <form action="">
-                                    <button class="bg-blue-600 rounded-lg px-[15px] py-[1px] text-white font-bold">DAFTAR</button>
-                                </form>
+                                <a href="{{ route('pendaftaran.sma.timeline', ['sma_id' => $data_sma->id]) }}" class="bg-blue-600 rounded-lg px-[15px] py-[1px] text-white font-bold">
+                                    DAFTAR
+                                </a>
                             </div>
                         </div>
                     @endforeach

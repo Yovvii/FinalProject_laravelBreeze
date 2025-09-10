@@ -20,7 +20,7 @@ Route::get('/dashboard', function () {
 
 Route::get('/pendaftaran_sma', function () {
     return view('pendaftaran_sma');
-})->middleware(['auth', 'verified'])->name('pendaftaran_sma');
+})->middleware(['auth', 'verified'])->name('pendaftaran_sma.index');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
@@ -32,13 +32,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('logout');
-    
     Route::patch('/password', [ProfileController::class, 'updatePassword'])->name('password.update');
 
     Route::get('/dashboard', [PendaftaranController::class, 'showTimeline'])->name('dashboard');
     Route::post('/simpan-data', [PendaftaranController::class, 'saveRegistration'])->name('save.registration');
     Route::get('/surat_pernyataan', [DocumentController::class, 'showSuratPernyataan'])->name('surat_pernyataan');
     Route::get('/download_surat', [DocumentController::class, 'downloadPdf'])->name('download.surat.pernyataan');
+    
+    Route::get('/pendaftaran_sma_timeline', function () {
+        return view('registration/sma_form/timeline_sma');
+    })->middleware(['auth', 'verified'])->name('timeline_pendaftaran_sma');
+    Route::get('/pendaftaran_sma/timeline', [SmaController::class, 'showTimeline'])->name('pendaftaran.sma.timeline');
+    Route::post('/pendaftaran_sma/submit', [SmaController::class, 'saveRegistration'])->name('pendaftaran_sma.submit');
 });
 
 require __DIR__.'/auth.php';

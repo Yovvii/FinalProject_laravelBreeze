@@ -91,8 +91,7 @@ class PendaftaranController extends Controller
             $progress->save();
         }
 
-        return redirect()->route('dashboard', ['step' => $nextStep])
-                        ->with('success', 'Data Langkah ' . $step . ' berhasil disimpan.');
+        return redirect()->route('dashboard', ['step' => $nextStep]);
     }
 
     private function _saveBiodata(Request $request)
@@ -171,7 +170,7 @@ class PendaftaranController extends Controller
             $ortu->save();
         });
 
-        return redirect()->route('dashboard',);
+        return redirect()->route('dashboard')->with('success', 'Biodata berhasil disimpan!');
     }
 
     private function _saveRapor(Request $request)
@@ -259,6 +258,9 @@ class PendaftaranController extends Controller
                 $siswa->save();
             }
         });
+
+        return redirect()->route('dashboard')->with('success', 'Surat Pernyataan berhasil diupload!');
+
     }
     
     public function _saveSuratKeteranganLulus(Request $request)
@@ -287,5 +289,7 @@ class PendaftaranController extends Controller
                 $siswa->save();
             }
         });
+
+        return redirect()->route('dashboard')->with('success', 'Surat Keterangan Lulus dan Ijazah berhasil disubmit!');
     }
 }
