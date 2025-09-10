@@ -25,7 +25,7 @@
                 </li>
                 <li>
                     <a href="{{ route('pendaftaran_sma') }}" class="flex items-center px-3 py-2 rounded-lg hover:bg-blue-600 bg-blue-700
-                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran_sma.timeline') ? 'bg-blue-800' : 'hover:bg-blue-600' }}">
+                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran.sma.timeline') ? 'bg-blue-800' : 'hover:bg-blue-600' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13 19c0 1.1.3 2.12.81 3H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h1v7l2.5-1.5L12 9V2h6a2 2 0 0 1 2 2v9.09c-.33-.05-.66-.09-1-.09c-3.31 0-6 2.69-6 6m10 0l-3-3v2h-4v2h4v2z"/></svg>
                         <span class="ml-3">Pendaftaran SMA</span>
                     </a>
