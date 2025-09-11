@@ -12,16 +12,29 @@
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
             <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
-                <div class="border border-gray-400 p-6 rounded-lg space-y-[30px]">
 
-                    <form method="POST" action="{{ route('pendaftaran_sma.submit') }}" enctype="multipart/form-data">
-                        <div>
-                            <p>Hello World!</p>
+                <form method="POST" action="{{ route('pendaftaran.sma.save_step') }}" enctype="multipart/form-data">
+                    @csrf
+                                    
+                    <input type="hidden" name="current_step" value="{{ $currentStep }}">
+                
+                    @if ($currentStep == 1)
+                        @include('account.timeline_form.biodata')
+                    @elseif ($currentStep == 2)
+                        @include('account.timeline_form.rapor')
+                    @elseif ($currentStep == 3)
+                        <div class="p-3 bg-green-100 rounded-lg font-bold">
+                            Yeyyy!!! Selamat Anda Sudah Menyelesaikan Tahap Registrasi Akun!
                         </div>
-                    </form>
+                    @endif
+                    
+                    <div class="mt-4">
+                        @include('registration.sma_form.pagination_sma', ['currentStep' => $currentStep])
+                    </div>
 
-                </div>
+                </form>
             </div>
         </div>
     </div>
+
 </x-app-layout>

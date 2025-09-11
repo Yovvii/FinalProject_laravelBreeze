@@ -39,11 +39,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/surat_pernyataan', [DocumentController::class, 'showSuratPernyataan'])->name('surat_pernyataan');
     Route::get('/download_surat', [DocumentController::class, 'downloadPdf'])->name('download.surat.pernyataan');
     
-    Route::get('/pendaftaran_sma_timeline', function () {
-        return view('registration/sma_form/timeline_sma');
-    })->middleware(['auth', 'verified'])->name('timeline_pendaftaran_sma');
+    Route::get('/pendaftaran_sma', [SmaController::class, 'index'])->name('pendaftaran_sma');
     Route::get('/pendaftaran_sma/timeline', [SmaController::class, 'showTimeline'])->name('pendaftaran.sma.timeline');
-    Route::post('/pendaftaran_sma/submit', [SmaController::class, 'saveRegistration'])->name('pendaftaran_sma.submit');
+    Route::post('/pendaftaran_sma/save-step', [SmaController::class, 'saveRegistration'])->name('pendaftaran.sma.save_step');
 });
 
 require __DIR__.'/auth.php';

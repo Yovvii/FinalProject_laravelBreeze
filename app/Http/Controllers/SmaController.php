@@ -7,6 +7,7 @@ use App\Models\Siswa;
 use App\Models\Semester;
 use App\Models\RaporFile;
 use Illuminate\Support\Str;
+use App\Models\TimelineProgress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -15,19 +16,44 @@ use Illuminate\Support\Carbon;
 use App\Models\Mapel;
 use App\Models\DataSma;
 use App\Models\SekolahAsal;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class SmaController extends Controller
 {
+    /**
+     * Tampilkan halaman daftar SMA.
+     */
     public function index()
     {
         $data_sekolah_sma = DataSma::with('akreditasi')->get();
         return view('pendaftaran_sma', compact('data_sekolah_sma'));
     }
 
+    /**
+     * Tampilkan halaman timeline pendaftaran.
+     */
     public function showTimeline(Request $request, $pathStep = null)
     {
+        $user = Auth::user();
+        $siswa = $user->siswa;
+
+        if ($request->has('sma_id') && $siswa) {
+            $smaId = (int) $request->input('sma_id');
+            if ($siswa->data_sma_id === null || $siswa->data_sam_id !== $smaId) {
+                $siswa->data_sma_id = $smaId;
+                $siswa->save();
+            }
+        }
+
+        if (!$user->timelineProgress) {
+            TimelineProgress::create([
+                'user_id' => $user->id,
+                'current_step' => 1,
+            ]);
+        }
+
         $progress = Auth::user()->timelineProgress->current_step ?? 1;
         $currentStep = $pathStep ?? $request->query('step', $progress);
         $currentStep = (int) $currentStep;
@@ -35,6 +61,7 @@ class SmaController extends Controller
             $currentStep = $progress;
         }
 
+        $siswa->refresh();
         /** @var \App\Models\User $user */
         $user = Auth::user()->load('siswa.ortu', 'semesters', 'raporFiles');
         $siswa = $user->siswa;
@@ -42,13 +69,7 @@ class SmaController extends Controller
         $sekolahAsals = SekolahAsal::all();
         $mapels = Mapel::all();
         $isPasswordChanged = Auth::user()->password_changed_at;
-
-        $sma_id = $request->query('sma_id');
-        $selectedSma = null;
-
-        if ($sma_id) {
-            $selectedSma = DataSma::findOrFail($sma_id);
-        }
+        $data_sma = DataSma::all();
         
         $tanggal_lahir_formatted = null;
         if ($siswa && $siswa->tanggal_lahir) {
@@ -62,7 +83,7 @@ class SmaController extends Controller
             ];
         }
 
-        $data_sekolah_sma = DataSma::with('akreditasi')->get();
+        $selectedSma = DataSma::find($siswa->data_sma_id) ?? null;
 
         return view('registration.sma_form.timeline_sma', [
             'currentStep' => (int)$currentStep,
@@ -76,40 +97,62 @@ class SmaController extends Controller
             'semesters' => $user->semesters,
             'raporData' => $raporData,
             'raporFiles' => $user->raporFiles,
-
-            'data_sekolah_sma' => $data_sekolah_sma,
             'selectedSma' => $selectedSma,
         ]);
+
     }
 
-    public function saveRegistration(Request $request)
+    /**
+     * Simpan sma_id yang dipilih pengguna dan redirect ke timeline.
+     */
+    public function saveRegistration(Request $request): RedirectResponse
     {
-        $step = $request->input('current_step');
+        $currentStep = (int) $request->input('current_step');
 
-        switch ($step) {
-            case 1:
-                $this->_saveBiodata($request);
-                break;
-            case 2:
-                $this->_saveRapor($request);
-                break;
-            case 3:
-                // $this->_saveSuratPernyataan($request);
-                // break;
-            case 4:
-                // $this->_saveSuratKeteranganLulus($request);
-                // break;
+        try {
+            DB::beginTransaction();
+
+            switch ($currentStep) {
+                case 1: // Langkah Biodata
+                    $this->_saveBiodata($request);
+                    break;
+                case 2: // Langkah Rapor
+                    $this->_saveRapor($request);
+                    break;
+                case 3: // Langkah Surat Pernyataan
+                    // $this->_saveSuratPernyataan($request);
+                    // break;
+                case 4: // Langkah Surat Keterangan Lulus
+                    // $this->_saveSuratKeteranganLulus($request);
+                    // break;
+                default:
+                    DB::rollBack();
+                    return redirect()->back()->with('error', 'Langkah tidak valid.');
+            }
+
+            // Setelah data disimpan, tingkatkan langkah dan simpan progres
+            $timelineProgress = Auth::user()->timelineProgress;
+            $nextStep = (int)$currentStep + 1;
+            
+            if ($nextStep > $timelineProgress->current_step) {
+                $timelineProgress->current_step = $nextStep;
+                $timelineProgress->save();
+            }
+
+            DB::commit();
+
+            return redirect()->route('pendaftaran.sma.timeline', ['step' => $nextStep])
+                ->with('success', 'Data berhasil disimpan. Silakan lanjutkan ke langkah berikutnya.');
+
+        } catch (ValidationException $e) {
+            DB::rollBack();
+            return redirect()->back()->withErrors($e->errors())->withInput()
+                ->with('error', 'Gagal menyimpan data. Pastikan semua data sudah diisi dengan benar.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error saat menyimpan data timeline: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
         }
-
-        $progress = Auth::user()->timelineProgress;
-        $nextStep = (int)$step + 1;
-
-        if ($nextStep > $progress->current_step) {
-            $progress->current_step = $nextStep;
-            $progress->save();
-        }
-
-        return redirect()->route('pendaftaran.sma.timeline', ['step' => $nextStep]);
     }
 
     private function _saveBiodata(Request $request)
@@ -120,20 +163,20 @@ class SmaController extends Controller
             'akta_file' => 'nullable|file|mimes:pdf|max:2048',
 
             // data siswa
-            'jenis_kelamin' => 'nullable|string',
-            'kabupaten' => 'nullable|string|max:255',
-            'kecamatan' => 'nullable|string|max:255',
-            'desa' => 'nullable|string',
-            'alamat' => 'nullable|string',
-            'no_kk' => 'nullable|string',
-            'nik' => 'nullable|string',
-            'no_hp' => 'nullable|string',
-            'nama_ayah' => 'nullable|string',
-            'nama_ibu' => 'nullable|string',
-            'email' => 'nullable|string',
-            'agama' => 'nullable|string',
+            'jenis_kelamin' => 'required|string',
+            'kabupaten' => 'required|string|max:255',
+            'kecamatan' => 'required|string|max:255',
+            'desa' => 'required|string',
+            'alamat' => 'required|string',
+            'no_kk' => 'required|string',
+            'nik' => 'required|string',
+            'no_hp' => 'required|string',
+            'nama_ayah' => 'required|string',
+            'nama_ibu' => 'required|string',
+            'email' => 'required|string',
+            'agama' => 'required|string',
             'kebutuhan_k' => 'nullable|string',
-            'sekolah_asal_id' => 'nullable|integer',
+            'sekolah_asal_id' => 'required|integer',
             
             // data wali
             'nama_wali' => 'nullable|string|max:255',
@@ -142,119 +185,95 @@ class SmaController extends Controller
             'pekerjaan_wali' => 'nullable|string|max:255',
             'alamat_wali' => 'nullable|string|max:255',
         ]);
+        
+        $user = Auth::user();
+        $user->email = $validatedData['email'];
+        $user->save();
 
-        DB::transaction(function () use ($validatedData, $request) {
-            $user = Auth::user();
+        $siswa = $user->siswa ?? new Siswa();
+        $siswa->user_id = $user->id;
 
-            $user->email = $validatedData['email'];
-            $user->save();
-
-            $siswa = $user->siswa;
-
-            $siswa = $user->siswa ?? new Siswa();
-            $siswa->user_id = $user->id;
-
-            if ($request->hasFile('foto')) {
-                if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
-                    Storage::disk('public')->delete($siswa->foto);
-                }
-                $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
+        if ($request->hasFile('foto')) {
+            if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
+                Storage::disk('public')->delete($siswa->foto);
             }
-            if ($request->hasFile('akta_file')) {
-                if ($siswa->akta_file && Storage::disk('public')->exists($siswa->akta_file)) {
-                    Storage::disk('public')->delete($siswa->akta_file);
-                }
-                $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
+            $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
+        }
+        if ($request->hasFile('akta_file')) {
+            if ($siswa->akta_file && Storage::disk('public')->exists($siswa->akta_file)) {
+                Storage::disk('public')->delete($siswa->akta_file);
             }
-            
+            $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
+        }
 
-            $siswaData = collect($validatedData)->except([
-                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta', 'email'
-            ])->toArray();
+        $siswaData = collect($validatedData)->except([
+            'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta_file', 'email'
+        ])->toArray();
 
-            // dd($validatedData);
+        $siswa->fill($siswaData);
+        $siswa->save();
 
-            $siswa->fill($siswaData);
-            $siswa->save();
+        $ortu = $siswa->ortu ?? new Ortu();
+        $ortu->siswa()->associate($siswa);
 
-            $ortu = $siswa->ortu ?? new Ortu();
-            $ortu->siswa()->associate($siswa);
+        $ortuData = $request->only([
+            'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
+        ]);
 
-            $ortuData = $request->only([
-                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
-            ]);
-
-            $ortu->fill($ortuData);
-            $ortu->save();
-        });
-
-        return redirect()->route('pendaftaran_sma')->with('success', 'Biodata berhasil disimpan!');
-    }
+        $ortu->fill($ortuData);
+        $ortu->save();
+    }    
 
     private function _saveRapor(Request $request)
     {
-        try {
-            // Validasi data rapor
-            $validated = $request->validate([
-                'nilai' => 'required|array|max:100',
-                'rapor_file' => 'nullable|array',
-                'rapor_file.*' => 'nullable|mimes:pdf|max:1000'
-            ]);
+        $validated = $request->validate([
+            'nilai' => 'required|array',
+            'nilai.*.*' => 'nullable|numeric|min:0|max:100',
+            'rapor_file' => 'nullable|array',
+            'rapor_file.*' => 'nullable|mimes:pdf|max:1000'
+        ]);
 
-            DB::beginTransaction();
+        $userId = Auth::id();
+        $dataNilai = $validated['nilai'];
+        $mapels = Mapel::all();
+        $rapor_file = RaporFile::all();
 
-            $userId = Auth::id();
-            $dataNilai = $validated['nilai'];
-            $mapels = Mapel::all();
-            $rapor_file = RaporFile::all();
+        foreach ($dataNilai as $semester => $nilaiMapel) {
+            if ($request->hasFile("rapor_file.{$semester}")) {
+                $file = $request->file("rapor_file.{$semester}");
 
-            foreach ($dataNilai as $semester => $nilaiMapel) {
-                if ($request->hasFile("rapor_file.{$semester}")) {
-                    $file = $request->file("rapor_file.{$semester}");
+                $existingRaporFile = RaporFile::where('user_id', $userId)->where('semester', $semester)->first();
 
-                    $existingRaporFile = RaporFile::where('user_id', $userId)->where('semester', $semester)->first();
-
-                    if ($existingRaporFile && Storage::disk('public')->exists($existingRaporFile->file_rapor)) {
-                        Storage::disk('public')->delete($existingRaporFile->file_rapor);
-                    }
-                    
-                    $fileName = $file->hashName('rapor_murid/' . $userId);
-                    $file->storeAs('rapor_murid/' . $userId, $fileName, 'public');
-
-                    RaporFile::updateOrCreate(
-                        ['user_id' => $userId,
-                        'semester' => $semester],
-                        ['file_rapor' => $fileName]
-                    );
+                if ($existingRaporFile && Storage::disk('public')->exists($existingRaporFile->file_rapor)) {
+                    Storage::disk('public')->delete($existingRaporFile->file_rapor);
                 }
+                
+                $fileName = $file->hashName('rapor_murid/' . $userId);
+                $file->storeAs('rapor_murid/' . $userId, $fileName, 'public');
 
-                foreach ($nilaiMapel as $namaMapel => $nilai) {
-                    $namaMapelDariForm = Str::replace('_', ' ', $namaMapel);
-
-                    $mapelId = $mapels->firstWhere(function ($mapel) use ($namaMapelDariForm) {
-                        return Str::lower($mapel->nama_mapel) === Str::lower($namaMapelDariForm);
-                    })->id ?? null;
-
-                    if ($nilai !== null && $mapelId !== null) {
-                        Semester::updateOrCreate(
-                            ['user_id' => $userId,
-                            'mapel_id' => $mapelId,
-                            'semester' => $semester],
-                            ['nilai_semester' => $nilai]
-                        );
-                    }
-                }
+                RaporFile::updateOrCreate(
+                    ['user_id' => $userId,
+                    'semester' => $semester],
+                    ['file_rapor' => $fileName]
+                );
             }
 
-            DB::commit();
-            return redirect()->back()->with('success', 'Data rapor berhasil disimpan!');
-        } catch (ValidationException $e) {
-            DB::rollBack();
-            return redirect()->back()->withErrors($e->errors())->withInput();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            Log::error('Error saat menyimpan rapor: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data. Silakan coba lagi.');
+            foreach ($nilaiMapel as $namaMapel => $nilai) {
+                $namaMapelDariForm = Str::replace('_', ' ', $namaMapel);
+
+                $mapelId = $mapels->firstWhere(function ($mapel) use ($namaMapelDariForm) {
+                    return Str::lower($mapel->nama_mapel) === Str::lower($namaMapelDariForm);
+                })->id ?? null;
+
+                if ($nilai !== null && $mapelId !== null) {
+                    Semester::updateOrCreate(
+                        ['user_id' => $userId,
+                        'mapel_id' => $mapelId,
+                        'semester' => $semester],
+                        ['nilai_semester' => $nilai]
+                    );
+                }
+            }
         }
     }
 }

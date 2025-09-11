@@ -19,6 +19,7 @@ class TimelineProgress extends Model
      */
     protected $fillable = [
         'user_id',
+        'sma_id',
         'current_step',
     ];
 
@@ -28,5 +29,10 @@ class TimelineProgress extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function sma(): BelongsTo
+    {
+        return $this->belongsTo(DataSma::class, 'sma_id');
     }
 }
