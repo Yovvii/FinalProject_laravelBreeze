@@ -1,8 +1,9 @@
 <x-app-layout>
     <div class="pt-5">
-        <div class="max-w-7xl mx-auto sm:px-8 lg:px-10">
+        <div class="max-w-7xl mx-auto sm:px-8 lg:px-10 flex">
+            <a href="{{ route('pendaftaran_sma') }}" class="text-[20px] text-black font-extrabold">< Kembali</a>
             @if ($selectedSma)
-            <p class="text-[20px] text-gray-500">Selamat Datang di <span class="font-[1000] text-black">{{ $selectedSma->nama_sma }}</span></p>
+            <p class="text-[20px] text-gray-500 ms-[5px]">|| Selamat Datang di Halaman Pendaftaran <span class="font-[1000] text-black">{{ $selectedSma->nama_sma }}</span></p>
             @else
             <p class="text-[20px] text-gray-500">Selamat Datang di Alur Masuk SPMB 2026/2027</p>
             @endif

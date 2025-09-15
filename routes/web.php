@@ -22,6 +22,10 @@ Route::get('/pendaftaran_sma', function () {
     return view('pendaftaran_sma');
 })->middleware(['auth', 'verified'])->name('pendaftaran_sma.index');
 
+Route::get('/test_field', function () { 
+    return view('test_field');
+})->middleware(['auth', 'verified'])->name('test_field');
+
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
 
 Route::get('/pendaftaran_sma', [SmaController::class, 'index'])->middleware(['auth'])->name('pendaftaran_sma');
@@ -40,6 +44,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/download_surat', [DocumentController::class, 'downloadPdf'])->name('download.surat.pernyataan');
     
     Route::get('/pendaftaran_sma', [SmaController::class, 'index'])->name('pendaftaran_sma');
+    Route::get('/pendaftaran_sma/jalur', [SmaController::class, 'showJalurPendaftaran'])->name('jalur_pendaftaran');
     Route::get('/pendaftaran_sma/timeline', [SmaController::class, 'showTimeline'])->name('pendaftaran.sma.timeline');
     Route::post('/pendaftaran_sma/save-step', [SmaController::class, 'saveRegistration'])->name('pendaftaran.sma.save_step');
 });

@@ -15,6 +15,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Carbon;
 use App\Models\Mapel;
 use App\Models\DataSma;
+use App\Models\JalurPendaftaran;
 use App\Models\SekolahAsal;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,6 +30,13 @@ class SmaController extends Controller
     {
         $data_sekolah_sma = DataSma::with('akreditasi')->get();
         return view('pendaftaran_sma', compact('data_sekolah_sma'));
+    }
+
+    public function showJalurPendaftaran()
+    {
+        $jalur_pendaftaran = JalurPendaftaran::all();
+        return view('registration.sma_form.jalur_pendaftaran_sma', compact('jalur_pendaftaran'));
+        // dd($jalur_pendaftaran->toArray());
     }
 
     /**

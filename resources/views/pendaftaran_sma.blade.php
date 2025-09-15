@@ -25,7 +25,7 @@
                             </div>
                             <div class="flex my-auto">
                                 <p class="me-5 text-[16px] my-auto"><span class="font-bold">8.209</span> Pendaftar</p>
-                                <form action="{{ route('pendaftaran.sma.timeline') }}" method="GET">
+                                <form action="{{ route('jalur_pendaftaran') }}" method="GET">
                                     @csrf
                                     <input type="hidden" name="sma_id" value="{{ $data_sma->id }}">
                                     <button type="submit" class="bg-blue-600 rounded-lg px-[15px] py-[1px] text-white font-bold">

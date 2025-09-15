@@ -25,16 +25,20 @@
                 </li>
                 <li>
                     <a href="{{ route('pendaftaran_sma') }}" class="flex items-center px-3 py-2 rounded-lg hover:bg-blue-600 bg-blue-700
-                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran.sma.timeline') ? 'bg-blue-800' : 'hover:bg-blue-600' }}">
+                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran.sma.timeline') || request()->routeIs('jalur_pendaftaran') ? 'bg-blue-800' : 'hover:bg-blue-600' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13 19c0 1.1.3 2.12.81 3H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h1v7l2.5-1.5L12 9V2h6a2 2 0 0 1 2 2v9.09c-.33-.05-.66-.09-1-.09c-3.31 0-6 2.69-6 6m10 0l-3-3v2h-4v2h4v2z"/></svg>
                         <span class="ml-3">Pendaftaran SMA</span>
                     </a>
                 </li>
-                {{-- <li>
-                    <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-blue-600">
-                        <span class="ml-3">Jadwal Pendaftaran</span>
+                <li>
+                    <a href="{{ route('test_field') }}" class="flex items-center px-3 py-2 rounded-lg hover:bg-blue-600 bg-blue-700
+                    {{ request()->routeIs('test_field') || request()->routeIs('test_field') ? 'bg-blue-800' : 'hover:bg-blue-600' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M10.5 3.798v5.02a3 3 0 0 1-.879 2.121l-2.377 2.377a9.845 9.845 0 0 1 5.091 1.013 8.315 8.315 0 0 0 5.713.636l.285-.071-3.954-3.955a3 3 0 0 1-.879-2.121v-5.02a23.614 23.614 0 0 0-3 0Zm4.5.138a.75.75 0 0 0 .093-1.495A24.837 24.837 0 0 0 12 2.25a25.048 25.048 0 0 0-3.093.191A.75.75 0 0 0 9 3.936v4.882a1.5 1.5 0 0 1-.44 1.06l-6.293 6.294c-1.62 1.621-.903 4.475 1.471 4.88 2.686.46 5.447.698 8.262.698 2.816 0 5.576-.239 8.262-.697 2.373-.406 3.092-3.26 1.47-4.881L15.44 9.879A1.5 1.5 0 0 1 15 8.818V3.936Z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-3">Test Field</span>
                     </a>
-                </li> --}}
+                </li>
                 <li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
