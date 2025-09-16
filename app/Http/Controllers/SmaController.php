@@ -36,12 +36,31 @@ class SmaController extends Controller
     {
         $jalur_pendaftaran = JalurPendaftaran::all();
         return view('registration.sma_form.jalur_pendaftaran_sma', compact('jalur_pendaftaran'));
-        // dd($jalur_pendaftaran->toArray());
     }
 
-    /**
-     * Tampilkan halaman timeline pendaftaran.
-     */
+    public function saveJalurPendaftaran(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'jalur_pendaftaran_id' => [
+    'required',
+    'integer',
+    'exists:App\Models\JalurPendaftaran,id',
+],
+        ]);
+
+        try {
+            $siswa = Auth::user()->siswa;
+            if ($siswa) {
+                $siswa->jalur_pendaftaran_id = $validated['jalur_pendaftaran_id'];
+                $siswa->save();
+            }
+            return redirect()->route('pendaftaran.sma.timeline', ['step' => 1])->with('success', 'Jalur pendaftaran berhasil disimpan.');
+        } catch (\Exception $e) {
+            log::error('Gagal menyimpan jalur pendaftaran : ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan jalur');
+        }
+    }
+
     public function showTimeline(Request $request, $pathStep = null)
     {
         $user = Auth::user();
@@ -109,10 +128,7 @@ class SmaController extends Controller
         ]);
 
     }
-
-    /**
-     * Simpan sma_id yang dipilih pengguna dan redirect ke timeline.
-     */
+    
     public function saveRegistration(Request $request): RedirectResponse
     {
         $currentStep = (int) $request->input('current_step');

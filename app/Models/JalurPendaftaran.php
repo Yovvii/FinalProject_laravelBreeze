@@ -14,6 +14,7 @@ class JalurPendaftaran extends Model
     protected $fillable = [
         'nama_jalur_pendaftaran',
         'logo',
+        'logo_active',
         'deskripsi',
     ];
 }
