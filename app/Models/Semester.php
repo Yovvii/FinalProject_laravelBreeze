@@ -15,7 +15,7 @@ class Semester extends Model
 
     public function mapels()
     {
-        return $this->belongsTo(Mapel::class);
+        return $this->belongsTo(Mapel::class, 'mapel_id');
     }
 
     public function user()

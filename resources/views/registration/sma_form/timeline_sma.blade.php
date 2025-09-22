@@ -24,9 +24,9 @@
                     @elseif ($currentStep == 2)
                         @include('account.timeline_form.rapor')
                     @elseif ($currentStep == 3)
-                        <div class="p-3 bg-green-100 rounded-lg font-bold">
-                            Yeyyy!!! Selamat Anda Sudah Menyelesaikan Tahap Registrasi Akun!
-                        </div>
+                        @include('registration.sma_form.sertifikat')
+                    @elseif ($currentStep == 4)
+                        @include('registration.sma_form.resume_sma')
                     @endif
                     
                     <div class="mt-4">

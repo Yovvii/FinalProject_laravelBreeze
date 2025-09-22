@@ -3,23 +3,24 @@
 namespace App\Http\Controllers;
 
 use App\Models\Ortu;
+use App\Models\Mapel;
 use App\Models\Siswa;
+use App\Models\DataSma;
 use App\Models\Semester;
 use App\Models\RaporFile;
+use App\Models\SekolahAsal;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
+use Illuminate\Validation\Rule;
+use App\Models\JalurPendaftaran;
 use App\Models\TimelineProgress;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
-use Illuminate\Support\Carbon;
-use App\Models\Mapel;
-use App\Models\DataSma;
-use App\Models\JalurPendaftaran;
-use App\Models\SekolahAsal;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class SmaController extends Controller
 {
@@ -32,61 +33,83 @@ class SmaController extends Controller
         return view('pendaftaran_sma', compact('data_sekolah_sma'));
     }
 
-    public function showJalurPendaftaran()
+    public function showJalurPendaftaran(Request $request)
     {
+        $validated = $request->validate([
+            'sma_id' => 'required|integer|exists:sma_datas,id',
+        ]);
+        
+        $sma_id = $validated['sma_id'];
         $jalur_pendaftaran = JalurPendaftaran::all();
-        return view('registration.sma_form.jalur_pendaftaran_sma', compact('jalur_pendaftaran'));
+        return view('registration.sma_form.jalur_pendaftaran_sma', compact('jalur_pendaftaran', 'sma_id'));
+    }
+
+    public function showResume()
+    {
+        $siswa = Auth::user()->siswa->load(['jalurPendaftaran', 'dataSma', 'semesters.mapels']);
+        return view('registration.sma_form.resume_sma', compact('siswa'));
     }
 
     public function saveJalurPendaftaran(Request $request): RedirectResponse
     {
+        // dd($request->all());
         $validated = $request->validate([
             'jalur_pendaftaran_id' => [
-    'required',
-    'integer',
-    'exists:App\Models\JalurPendaftaran,id',
-],
+                'required',
+                'integer',
+                Rule::exists('jalur_pendaftarans', 'id'),
+            ],
+            'sma_id' => [
+                'required',
+                'integer',
+                Rule::exists('sma_datas', 'id'),
+            ],
         ]);
 
         try {
-            $siswa = Auth::user()->siswa;
-            if ($siswa) {
-                $siswa->jalur_pendaftaran_id = $validated['jalur_pendaftaran_id'];
-                $siswa->save();
+            $user = Auth::user();
+            if (!$user) {
+                return redirect()->back()->with('error', 'Pengguna tidak terautentikasi.');
             }
-            return redirect()->route('pendaftaran.sma.timeline', ['step' => 1])->with('success', 'Jalur pendaftaran berhasil disimpan.');
+
+            $siswa = Siswa::firstOrNew(['user_id' => $user->id]);
+            $siswa->jalur_pendaftaran_id = $validated['jalur_pendaftaran_id'];
+            $siswa->data_sma_id = $validated['sma_id'];
+            // dd($siswa);
+            $siswa->save();
+
+            $timelineProgress = TimelineProgress::firstOrNew(['user_id' => $user->id]);
+            $timelineProgress->current_step = 1;
+            $timelineProgress->sma_id = $validated['sma_id'];
+            // dd($timelineProgress);
+            $timelineProgress->save();
+
+
+            return redirect()->route('pendaftaran.sma.timeline', ['step' => 1])
+                ->with('success', 'Jalur dan SMA berhasil disimpan.');
         } catch (\Exception $e) {
-            log::error('Gagal menyimpan jalur pendaftaran : ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan jalur');
+            Log::error('Gagal menyimpan jalur dan SMA: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menyimpan data');
         }
     }
 
+
     public function showTimeline(Request $request, $pathStep = null)
-    {
-        $user = Auth::user();
-        $siswa = $user->siswa;
-
-        if ($request->has('sma_id') && $siswa) {
-            $smaId = (int) $request->input('sma_id');
-            if ($siswa->data_sma_id === null || $siswa->data_sam_id !== $smaId) {
-                $siswa->data_sma_id = $smaId;
-                $siswa->save();
-            }
-        }
-
-        if (!$user->timelineProgress) {
-            TimelineProgress::create([
-                'user_id' => $user->id,
-                'current_step' => 1,
-            ]);
-        }
-
+    {        
         $progress = Auth::user()->timelineProgress->current_step ?? 1;
         $currentStep = $pathStep ?? $request->query('step', $progress);
         $currentStep = (int) $currentStep;
         if ($currentStep > $progress) {
             $currentStep = $progress;
         }
+        
+        $siswa = Auth::user()->siswa;
+
+        // Logika Menghitung Nilai Akhir
+        $allNilai = $siswa->semesters->pluck('nilai_semester');
+        $totalNilai = $allNilai->sum();
+        $jumlahEntri = $allNilai->count();
+        $nilaiAkhir = $jumlahEntri > 0 ? $totalNilai / $jumlahEntri : 0;
 
         $siswa->refresh();
         /** @var \App\Models\User $user */
@@ -125,11 +148,13 @@ class SmaController extends Controller
             'raporData' => $raporData,
             'raporFiles' => $user->raporFiles,
             'selectedSma' => $selectedSma,
+
+            'nilaiAkhir' => $nilaiAkhir,
         ]);
 
     }
     
-    public function saveRegistration(Request $request): RedirectResponse
+    public function savePendaftaran(Request $request): RedirectResponse
     {
         $currentStep = (int) $request->input('current_step');
 
@@ -137,18 +162,18 @@ class SmaController extends Controller
             DB::beginTransaction();
 
             switch ($currentStep) {
-                case 1: // Langkah Biodata
+                case 1:
                     $this->_saveBiodata($request);
                     break;
-                case 2: // Langkah Rapor
+                case 2:
                     $this->_saveRapor($request);
                     break;
-                case 3: // Langkah Surat Pernyataan
-                    // $this->_saveSuratPernyataan($request);
-                    // break;
-                case 4: // Langkah Surat Keterangan Lulus
-                    // $this->_saveSuratKeteranganLulus($request);
-                    // break;
+                case 3:
+                    $this->_saveSertifikat($request);
+                    break;
+                case 4: 
+                    $this->_savePrestasi($request);
+                    break;
                 default:
                     DB::rollBack();
                     return redirect()->back()->with('error', 'Langkah tidak valid.');
@@ -300,4 +325,42 @@ class SmaController extends Controller
             }
         }
     }
+
+    private function _saveSertifikat(Request $request)
+    {
+    $validatedData = $request->validate([
+        'sertifikat_file' => 'nullable|file|mimes:pdf|max:500',
+    ]);
+
+    $siswa = Auth::user()->siswa;
+
+    if (!$siswa) {
+        throw new \Exception('Data siswa tidak ditemukan.');
+    }
+
+    if ($request->hasFile('sertifikat_file')) {
+        if ($siswa->sertifikat_file && Storage::disk('public')->exists($siswa->sertifikat_file)) {
+            Storage::disk('public')->delete($siswa->sertifikat_file);
+        }
+        
+        $filePath = $request->file('sertifikat_file')->store('sertifikat_murid', 'public');
+        $siswa->sertifikat_file = $filePath;
+        $siswa->save();
+    }
+    }
+
+    private function _savePrestasi(Request $request)
+    {
+        $siswa = Auth::user()->siswa;
+        $siswa->status_pendaftaran = 'completed';
+        if ($request->has('nilai_akhir')) {
+            $siswa->nilai_akhir = $request->input('nilai_akhir');
+        }
+        
+        $siswa->save();
+        Auth::user()->timelineProgress->delete();
+        DB::commit();
+        return redirect()->route('pendaftaran_sma')->with('success', 'Pendaftaran Anda berhasil diselesaikan!');
+    }
+    
 }

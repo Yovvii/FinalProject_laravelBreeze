@@ -16,6 +16,7 @@ export default {
         'text-yellow-100',
         'text-yellow-200',
         'text-white',
+        'fill-blue-600',
     ],
 
     theme: {

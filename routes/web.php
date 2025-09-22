@@ -47,7 +47,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/pendaftaran_sma/jalur', [SmaController::class, 'showJalurPendaftaran'])->name('jalur_pendaftaran');
     Route::post('/pendaftaran_sma/simpan-jalur', [SmaController::class, 'saveJalurPendaftaran'])->name('pendaftaran.sma.saveJalur');
     Route::get('/pendaftaran_sma/timeline', [SmaController::class, 'showTimeline'])->name('pendaftaran.sma.timeline');
-    Route::post('/pendaftaran_sma/save-step', [SmaController::class, 'saveRegistration'])->name('pendaftaran.sma.save_step');
+
+    Route::get('/pendaftaran_sma/resume', [SmaController::class, 'showResume'])->name('resume');
+    Route::post('/pendaftaran_sma/save-step', [SmaController::class, 'savePendaftaran'])->name('pendaftaran.sma.save_step');
 });
 
 require __DIR__.'/auth.php';

@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Siswa extends Model
 {
@@ -34,6 +35,12 @@ class Siswa extends Model
         'surat_pernyataan',
         'surat_keterangan_lulus',
         'ijazah_file',
+        'sertifikat_file',
+
+        'data_sma_id',
+        'jalur_pendaftaran_id',
+        'nilai_akhir',
+        'status_pendaftaran',
       ];
       
     public function user(): BelongsTo
@@ -49,5 +56,20 @@ class Siswa extends Model
     public function sekolahAsal(): BelongsTo
     {
         return $this->belongsTo(SekolahAsal::class, 'sekolah_asal_id');
+    }
+
+    public function jalurPendaftaran(): BelongsTo
+    {
+        return $this->belongsTo(JalurPendaftaran::class, 'jalur_pendaftaran_id');
+    }
+
+    public function dataSma(): BelongsTo
+    {
+        return $this->belongsTo(DataSma::class, 'data_sma_id');
+    }
+
+    public function semesters(): HasMany
+    {
+        return $this->hasMany(Semester::class, 'user_id', 'user_id');
     }
 }
