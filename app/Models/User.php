@@ -68,4 +68,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(RaporFile::class, 'user_id', 'id');
     }
+
+    public function smaData()
+    {
+        return $this->belongsTo(DataSma::class, 'sma_data_id');
+    }
 }

@@ -2,34 +2,33 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SmaController;
+use App\Http\Middleware\IsAdminSekolah;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProgressBarController;
+use App\Http\Controllers\AdminSekolahController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () { 
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Grup rute untuk Admin Sekolah
+Route::get('/admin/login', [AdminSekolahController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminSekolahController::class, 'login']);
 
-Route::get('/pendaftaran_sma', function () {
-    return view('pendaftaran_sma');
-})->middleware(['auth', 'verified'])->name('pendaftaran_sma.index');
+Route::middleware([IsAdminSekolah::class])->group(function () {
+    Route::get('/admin/dashboard', [AdminSekolahController::class, 'dashboard'])->name('admin.dashboard');
+    Route::get('/admin/sertifikat-murid', [AdminSekolahController::class, 'showSertifikatMurid'])->name('admin.sertifikat_murid');
+    Route::post('/admin/verifikasi_sertifikat/{siswa}', [AdminSekolahController::class, 'verifikasiSertifikat'])->name('admin.verifikasi_sertifikat');
+    Route::get('/admin/jalur-pendaftaran', [AdminSekolahController::class, 'showJalurIndex'])->name('admin.jalur_pendaftaran.index');
+    Route::get('/admin/jalur-pendaftaran/{jalur_id}', [AdminSekolahController::class, 'showStudentsByJalur'])->name('admin.jalur_pendaftaran.show');
+});
 
-Route::get('/test_field', function () { 
-    return view('test_field');
-})->middleware(['auth', 'verified'])->name('test_field');
-
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-
-Route::get('/pendaftaran_sma', [SmaController::class, 'index'])->middleware(['auth'])->name('pendaftaran_sma');
-
+Route::get('/dashboard/test', [SmaController::class, 'testField'])->name('test_field');
 Route::get('/dashboard/progress_bar', [ProgressBarController::class, 'index'])->name('progress_bar');
 
 Route::middleware('auth')->group(function () {

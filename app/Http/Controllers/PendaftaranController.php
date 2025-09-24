@@ -149,7 +149,6 @@ class PendaftaranController extends Controller
                 $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
             }
             
-
             $siswaData = collect($validatedData)->except([
                 'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta', 'email'
             ])->toArray();
@@ -159,15 +158,14 @@ class PendaftaranController extends Controller
             $siswa->fill($siswaData);
             $siswa->save();
 
-            $ortu = $siswa->ortu ?? new Ortu();
-            $ortu->siswa()->associate($siswa);
-
             $ortuData = $request->only([
                 'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
             ]);
 
-            $ortu->fill($ortuData);
-            $ortu->save();
+            Ortu::updateOrCreate(
+                ['siswa_id' => $siswa->id],
+                $ortuData
+            );            
         });
 
         return redirect()->route('dashboard')->with('success', 'Biodata berhasil disimpan!');

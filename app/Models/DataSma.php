@@ -20,4 +20,14 @@ class DataSma extends Model
     {
         return $this->belongsTo(Akreditasi::class, 'akreditasi_id');
     }
+
+    public function admin()
+    {
+        return $this->hasOne(User::class, 'sma_data_id')->where('role', 'admin_sekolah');
+    }
+
+    public function siswas()
+    {
+        return $this->hasMany(Siswa::class, 'data_sma_id');
+    }
 }

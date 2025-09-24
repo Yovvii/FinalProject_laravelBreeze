@@ -62,6 +62,12 @@ class AuthenticatedSessionController extends Controller
             ]);
         }
 
+        if ($user->role !== 'siswa') {
+            throw ValidationException::withMessages([
+                'nisn' => __('Anda tidak memiliki akses sebagai siswa.'),
+            ]);
+        }
+
         // Login user
         Auth::login($user, $request->boolean('remember'));
 

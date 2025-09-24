@@ -24,7 +24,9 @@
                                 </p>
                             </div>
                             <div class="flex my-auto">
-                                <p class="me-5 text-[16px] my-auto"><span class="font-bold">8.209</span> Pendaftar</p>
+                                <p class="me-5 text-[16px] my-auto">
+                                    <span class="font-bold">{{ number_format($data_sma->siswas_count, 0, ',', '.') }}</span> Pendaftar
+                                </p>
                                 <form action="{{ route('jalur_pendaftaran') }}" method="GET">
                                     @csrf
                                     <input type="hidden" name="sma_id" value="{{ $data_sma->id }}">

@@ -43,13 +43,13 @@
             </div>
 
             <div class="w-full grid place-items-center">
-                <div class="relative w-20">
+                {{-- <div class="relative w-20">
                     <img src="{{ $siswa && $siswa->foto ? asset('storage/' . $siswa->foto) : asset('storage/profile_murid/avatar_empty.jpg') }}" alt=""
                     class="rounded-full">
-                </div>
+                </div> --}}
 
                 <span class="mt-2 font-black">{{ Auth::user()->name }}</span>
-                <span class="font-light text-sm tracking-wide">{{ Auth::user()->siswa->nisn }}</span>
+                {{-- <span class="font-light text-sm tracking-wide">{{ Auth::user()->siswa->nisn }}</span> --}}
             </div>
 
             <nav class="flex-1 mt-6 px-5">
@@ -67,11 +67,6 @@
                             <span class="ml-3">Pendaftaran SMA</span>
                         </a>
                     </li>
-                    {{-- <li>
-                        <a href="#" class="flex items-center px-3 py-2 rounded-lg hover:bg-blue-600">
-                            <span class="ml-3">Jadwal Pendaftaran</span>
-                        </a>
-                    </li> --}}
                     <li>
                         <form action="{{ route('logout') }}" method="POST">
                             @csrf

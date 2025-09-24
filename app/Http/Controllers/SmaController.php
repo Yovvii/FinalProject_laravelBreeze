@@ -29,8 +29,13 @@ class SmaController extends Controller
      */
     public function index()
     {
-        $data_sekolah_sma = DataSma::with('akreditasi')->get();
+        $data_sekolah_sma = DataSma::with('akreditasi')->withCount('siswas')->get();
         return view('pendaftaran_sma', compact('data_sekolah_sma'));
+    }
+
+    public function testField()
+    {
+        return view('test_field');
     }
 
     public function showJalurPendaftaran(Request $request)
@@ -206,6 +211,7 @@ class SmaController extends Controller
 
     private function _saveBiodata(Request $request)
     {
+        // dd($request->all());
         $validatedData = $request->validate([
             // file
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
@@ -235,42 +241,43 @@ class SmaController extends Controller
             'alamat_wali' => 'nullable|string|max:255',
         ]);
         
-        $user = Auth::user();
-        $user->email = $validatedData['email'];
-        $user->save();
+        DB::transaction(function () use ($validatedData, $request) {
+            $user = Auth::user();
+            $user->email = $validatedData['email'];
+            $user->save();
 
-        $siswa = $user->siswa ?? new Siswa();
-        $siswa->user_id = $user->id;
+            $siswa = $user->siswa ?? new Siswa();
+            $siswa->user_id = $user->id;
 
-        if ($request->hasFile('foto')) {
-            if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
-                Storage::disk('public')->delete($siswa->foto);
+            if ($request->hasFile('foto')) {
+                if ($siswa->foto && Storage::disk('public')->exists($siswa->foto)) {
+                    Storage::disk('public')->delete($siswa->foto);
+                }
+                $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
             }
-            $siswa->foto = $request->file('foto')->store('profile_murid', 'public');
-        }
-        if ($request->hasFile('akta_file')) {
-            if ($siswa->akta_file && Storage::disk('public')->exists($siswa->akta_file)) {
-                Storage::disk('public')->delete($siswa->akta_file);
+            if ($request->hasFile('akta_file')) {
+                if ($siswa->akta_file && Storage::disk('public')->exists($siswa->akta_file)) {
+                    Storage::disk('public')->delete($siswa->akta_file);
+                }
+                $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
             }
-            $siswa->akta_file = $request->file('akta_file')->store('akta_murid', 'public');
-        }
 
-        $siswaData = collect($validatedData)->except([
-            'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta_file', 'email'
-        ])->toArray();
+            $siswaData = collect($validatedData)->except([
+                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali', 'foto', 'akta_file', 'email'
+            ])->toArray();
 
-        $siswa->fill($siswaData);
-        $siswa->save();
+            $siswa->fill($siswaData);
+            $siswa->save();
 
-        $ortu = $siswa->ortu ?? new Ortu();
-        $ortu->siswa()->associate($siswa);
+            $ortuData = $request->only([
+                'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
+            ]);
 
-        $ortuData = $request->only([
-            'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
-        ]);
-
-        $ortu->fill($ortuData);
-        $ortu->save();
+            Ortu::updateOrCreate(
+                ['siswa_id' => $siswa->id],
+                $ortuData
+            );   
+        });
     }    
 
     private function _saveRapor(Request $request)
