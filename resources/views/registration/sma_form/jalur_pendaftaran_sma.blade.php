@@ -18,7 +18,7 @@
                                     @foreach ($jalur_pendaftaran as $jalur)
                                         <li class="group relative flex justify-start items-center rounded-2xl w-full h-[80px] border-[2px] border-blue-500 mb-3 
                                         hover:bg-blue-200 transition-all duration-200 hover:border-none hover:shadow-lg hover:h-[85px] hover:w-[101%]
-                                        has-[:checked]:bg-blue-200 has-[:checked]:border-none has-[:checked]:shadow-lg has-[:checked]:h-[85px] has-[:checked]:w-[101%]" data-id="{{ $jalur->id }}" data-nama="{{ $jalur->nama_jalur_pendaftaran }}" data-deskripsi="{{ $jalur->deskripsi }}">
+                                        has-[:checked]:bg-blue-200 has-[:checked]:border-none has-[:checked]:shadow-lg has-[:checked]:h-[85px] has-[:checked]:w-[101%]" data-id="{{ $jalur->id }}" data-logo="{{ $jalur->logo }}" data-nama="{{ $jalur->nama_jalur_pendaftaran }}" data-deskripsi="{{ $jalur->deskripsi }}">
                                             <input type="radio" id="jalur-{{ $jalur->id }}" name="jalur_pendaftaran_id" value="{{ $jalur->id }}" class="absolute opacity-0">
                                             <label for="jalur-{{ $jalur->id }}" class="p-4 flex items-center">
                                                 <div class="transition-all duration-200 rounded-full bg-blue-600 flex justify-center items-center h-[45px] w-[45px] group-hover:bg-white group-has-[:checked]:bg-white">
@@ -38,10 +38,15 @@
                         <!-- Panel Deskripsi -->
                         <div id="description-panel" class="p-4 rounded-2xl w-full bg-blue-200 flex flex-col items-center px-4">
                             <div id="panel-logo-container" class="rounded-full bg-blue-600 flex justify-center items-center h-[55px] w-[55px]">
-                                {!! $jalur->logo !!}
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="white" class="size-8">
+                                    <path d="M7.25 11.5a.75.75 0 0 0 0 1.5h1.5a.75.75 0 0 0 0-1.5h-1.5Z" />
+                                    <path fill-rule="evenodd" d="M6 1a2.5 2.5 0 0 0-2.5 2.5v9A2.5 2.5 0 0 0 6 15h4a2.5 2.5 0 0 0 2.5-2.5v-9A2.5 2.5 0 0 0 10 1H6Zm4 1.5h-.5V3a.5.5 0 0 1-.5.5H7a.5.5 0 0 1-.5-.5v-.5H6a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1Z" clip-rule="evenodd" />
+                                </svg>
                             </div>
-                            <h3 id="panel-title" class="text-center mt-3 text-[18px] text-gray-900 font-semibold">{{ $jalur->nama_jalur_pendaftaran }}</h3>
-                            <p id="panel-description" class="text-center text-sm text-gray-600">{{ $jalur->deskripsi }}</p>
+                            <h3 id="panel-title" class="text-center mt-3 text-[18px] text-gray-900 font-semibold">
+                                Pilih Jalur Pendaftaran</h3>
+                            <p id="panel-description" class="text-center text-sm text-gray-600">
+                                Silahkan pilih salah satu jalur pendaftaran yang tersedia</p>
                         </div>
                     </div>
                     
@@ -61,23 +66,21 @@
             const panelDescription = document.getElementById('panel-description');
             const hiddenInputId = document.getElementById('jalur-pendaftaran-id');
             const radioInputs = document.querySelectorAll('input[name="jalur_pendaftaran_id"]');
-            // const panelLogoContainer = document.getElementById('panel-logo-container');
-            // const form = document.getElementById('registration-form');
-            
+            const panelLogoContainer = document.getElementById('panel-logo-container');
+
             function updatePanel(element) {
                 if (element && element.dataset.nama) {
                     panelTitle.textContent = element.dataset.nama;
                     panelDescription.textContent = element.dataset.deskripsi;
                     hiddenInputId.value = element.dataset.id;
                     // panelLogoContainer.innerHTML = element.dataset.logo;
+
+                    const logoHtml = element.dataset.logo;
+                
+                    if (logoHtml) {
+                        panelLogoContainer.innerHTML = logoHtml;
+                    }
                 }
-            }
-            
-            const firstRadio = radioInputs[0];
-            if (firstRadio) {
-                firstRadio.checked = true;
-                const firstLi = firstRadio.closest('li[data-id]');
-                updatePanel(firstLi);
             }
 
             radioInputs.forEach(radio => {

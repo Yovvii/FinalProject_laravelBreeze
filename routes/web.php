@@ -7,6 +7,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\TimelineController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProgressBarController;
 use App\Http\Controllers\AdminSekolahController;
@@ -16,10 +17,16 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// Rute untuk super admin
+Route::get('/superadmin/login', [SuperAdminController::class, 'showLoginForm'])->name('superadmin.login.form');
+Route::post('/superadmin/login', [SuperAdminController::class, 'login'])->name('superadmin.login');
+Route::middleware(['is_super_admin'])->prefix('super-admin')->group(function () {
+    Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super_admin.dashboard');
+});
+
 // Grup rute untuk Admin Sekolah
 Route::get('/admin/login', [AdminSekolahController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminSekolahController::class, 'login']);
-
 Route::middleware([IsAdminSekolah::class])->group(function () {
     Route::get('/admin/dashboard', [AdminSekolahController::class, 'dashboard'])->name('admin.dashboard');
     Route::get('/admin/sertifikat-murid', [AdminSekolahController::class, 'showSertifikatMurid'])->name('admin.sertifikat_murid');
