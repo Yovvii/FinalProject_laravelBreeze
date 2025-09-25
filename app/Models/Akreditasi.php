@@ -10,7 +10,7 @@ class Akreditasi extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nama_akreditasi',
+        'jenis_akreditasi',
         'warna_background',
         'warna_text',
     ];

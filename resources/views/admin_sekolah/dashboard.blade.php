@@ -4,7 +4,7 @@
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Daftar Semua Siswa dari Sekolah Anda</h3>
+                <h3 class="text-lg font-semibold mb-4">Daftar Calon Murid Baru</h3>
                 
                 @if ($siswas->isEmpty())
                     <div class="text-center text-gray-500">

@@ -13,7 +13,14 @@
                         <div class="flex justify-between py-3 px-4 border-b-2 border-gray-100">
                             <div class="flex my-auto">
                                 <div class="w-[50px] h-[50px] me-3 my-auto">
-                                    <img class="w-full my-auto" src="{{ asset('assets/profile_sekolah_jpg/SMAN1Kejobong.png') }}" alt="">
+                                    @if ($data_sma->logo_sma)
+                                        <img class="w-full h-full object-cover" src="{{ asset('storage/' . $data_sma->logo_sma) }}" alt="Logo {{ $data_sma->nama_sma }}">
+                                    @else
+                                        {{-- Placeholder jika tidak ada logo --}}
+                                        <div class="w-full h-full bg-gray-200 rounded-full flex items-center justify-center">
+                                            <span class="text-xs text-gray-500">Logo</span>
+                                        </div>
+                                    @endif
                                 </div>
                                 <p class="text-[16px]/[18px] font-bold my-auto">{{ $data_sma->nama_sma }}<br>
                                     @if ($data_sma->akreditasi)

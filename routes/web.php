@@ -22,6 +22,14 @@ Route::get('/superadmin/login', [SuperAdminController::class, 'showLoginForm'])-
 Route::post('/superadmin/login', [SuperAdminController::class, 'login'])->name('superadmin.login');
 Route::middleware(['is_super_admin'])->prefix('super-admin')->group(function () {
     Route::get('/dashboard', [SuperAdminController::class, 'dashboard'])->name('super_admin.dashboard');
+    Route::get('/data-sma', [SuperAdminController::class, 'dataSma'])->name('super_admin.data_sma');
+    Route::get('/data-sma/tambah', [SuperAdminController::class, 'createSma'])->name('super_admin.sma.create');
+    Route::get('/data-sma/{sma}/edit', [SuperAdminController::class, 'editSma'])->name('super_admin.sma.edit');
+    Route::put('/data-sma/{sma}', [SuperAdminController::class, 'updateSma'])->name('super_admin.sma.update');
+    Route::delete('/data-sma/{sma}', [SuperAdminController::class, 'updateSma'])->name('super_admin.sma.destroy');
+    Route::post('/data-sekolah', [SuperAdminController::class, 'storeSma'])->name('super_admin.sma.store');
+
+    Route::get('/data-admin-sekolah', [SuperAdminController::class, 'dataAdminSekolah'])->name('super_admin.data_admin_sekolah');
 });
 
 // Grup rute untuk Admin Sekolah

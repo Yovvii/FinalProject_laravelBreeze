@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Siswa;
 use App\Models\DataSma;
+use App\Models\Akreditasi;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class SuperAdminController extends Controller
 {
@@ -59,6 +61,80 @@ class SuperAdminController extends Controller
         $total_siswa = Siswa::count();
 
         return view('super_admin.dashboard', compact('total_sekolah', 'total_admin', 'total_siswa'));
+    }
+
+    public function dataSma()
+    {
+        $smas = DataSma::all();
+        return view('super_admin.data_sma', compact('smas'));
+    }
+
+    public function createSma()
+    {
+        $akreditasis = Akreditasi::all();
+        return view('super_admin.form_sma', compact('akreditasis'));
+    }
+
+    public function storeSma(Request $request)
+    {
+        $validated = $request->validate([
+            'nama_sma' => 'required|string|max:255|unique:sma_datas,nama_sma',
+            'akreditasi_id' => 'required|exists:akreditasis,id',
+            'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $logoPath = null;
+        if ($request->hasFile('logo_sma')) {
+            $logoPath = $request->file('logo_sma')->store('assets/profile_sekolah_jpg', 'public');
+        }
+
+        DataSma::create([
+            'nama_sma' => $validated['nama_sma'],
+            'akreditasi_id' => $validated['akreditasi_id'],
+            'logo_sma' => $logoPath,
+        ]);
+
+        return redirect()->route('super_admin.data_sma')->with('success', 'Data sekolah berhasil ditambahkan.');
+    }
+
+    public function editSma(DataSma $sma)
+    {
+        $akreditasis = Akreditasi::all();
+        return view('super_admin.form_sma', compact('sma', 'akreditasis'));
+    }
+
+    public function updateSma(Request $request, DataSma $sma)
+    {
+        $validated = $request->validate([
+            'nama_sma' => 'required|string|max:255|unique:sma_datas,nama_sma,' . $sma->id,
+            'akreditasi_id' => 'required|exists:akreditasis,id',
+            'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        if ($request->hasFile('logo_sma')) {
+            if ($sma->logo_sma) {
+                Storage::disk('public')->delete($sma->logo_sma);
+            }
+            $validated['logo_sma'] = $request->file('logo_sma')->store('assets/profile_sekolah_jpg', 'public');
+        }
+
+        $sma->update($validated);
+
+        return redirect()->route('super_admin.data_sma')->with('success', 'Data sekolah berhasil diperbarui.');
+    }
+
+    public function destroySma(DataSma $sma)
+    {
+        if ($sma->logo_sma) {
+            Storage::disk('public')->delete($sma->logo_sma);
+        }
+        $sma->delete();
+        return redirect()->route('super_admin.data_sekolah')->with('success', 'Data sekolah berhasil dihapus.');
+    }
+
+    public function dataAdminSekolah()
+    {
+        return view('super_admin.data_admin_sekolah');
     }
 
     public function createAdminForm()

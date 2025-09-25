@@ -14,6 +14,7 @@ class DataSma extends Model
     protected $fillable = [
         'nama_sma',
         'akreditasi_id',
+        'logo_sma',
     ];
 
     public function akreditasi()
