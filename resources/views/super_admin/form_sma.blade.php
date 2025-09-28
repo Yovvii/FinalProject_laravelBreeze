@@ -39,6 +39,17 @@
                     </div>
 
                     <div class="mb-4">
+                        <label for="kuota_siswa" class="block text-gray-700 text-sm font-bold mb-2">Kuota Siswa (Angka)</label>
+                        <input type="number" name="kuota_siswa" id="kuota_siswa" 
+                            value="{{ old('kuota_siswa', $sma->kuota_siswa ?? 0) }}" 
+                            class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                            min="0" required>
+                        @error('kuota_siswa')
+                            <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <div class="mb-4">
                         <label for="logo_sma" class="block text-gray-700 text-sm font-bold mb-2">Logo Sekolah</label>
                         <input type="file" name="logo_sma" id="logo_sma" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline">
                         @error('logo_sma')

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'password',
         'role',
         'password_changed_at',
+        'sma_data_id',
     ];
 
     /**
@@ -70,6 +71,11 @@ class User extends Authenticatable
     }
 
     public function smaData()
+    {
+        return $this->belongsTo(DataSma::class, 'sma_data_id');
+    }
+
+    public function sma()
     {
         return $this->belongsTo(DataSma::class, 'sma_data_id');
     }

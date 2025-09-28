@@ -15,6 +15,7 @@ class DataSma extends Model
         'nama_sma',
         'akreditasi_id',
         'logo_sma',
+        'kuota_siswa',
     ];
 
     public function akreditasi()

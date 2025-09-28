@@ -6,9 +6,9 @@
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
                 <h3 class="text-lg font-semibold mb-4">Verifikasi Sertifikat Siswa</h3>
                 
-                @if (session('success'))
+                @if (session('berhasil'))
                     <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative mb-4" role="alert">
-                        {{ session('success') }}
+                        {{ session('berhasil') }}
                     </div>
                 @endif
 

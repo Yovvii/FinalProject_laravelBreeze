@@ -4,7 +4,7 @@
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Daftar Jalur Pendaftaran</h3>
+                <h3 class="text-lg font-semibold mb-4">Daftar Jalur Pendaftaran {{ Auth::user()->sma->nama_sma ?? '' }}</h3>
                 
                 <div class="flex space-x-4 mb-6">
                     @foreach ($jalurs as $jalur)
@@ -28,7 +28,7 @@
                         Belum ada siswa yang terdaftar pada jalur ini.
                     </div>
                 @else
-                    <div class="overflow-x-auto shadow-lg rounded-lg">
+                    <div class="overflow-x-auto rounded-lg">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr>
@@ -41,8 +41,15 @@
                             <tbody class="bg-gray-50">
                                 @foreach ($siswas as $siswa)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $siswa->user->name }}
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                            <div class="px-2 rounded-full w-fit
+                                                @if ($siswa->verifikasi_sertifikat === 'terverifikasi')
+                                                    bg-green-100 text-green-800 font-bold
+                                                @else
+                                                    text-gray-900 
+                                                @endif">
+                                                {{ $siswa->user->name }}
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $siswa->sekolahAsal->nama_sekolah }}

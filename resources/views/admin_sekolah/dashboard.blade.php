@@ -25,8 +25,23 @@
                             <tbody class="bg-white">
                                 @foreach ($siswas as $siswa)
                                     <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                            {{ $siswa->user->name }}
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-10 w-10 mr-4">
+                                                    @if ($siswa->foto)
+                                                        <img class="h-10 w-10 rounded-full object-cover" 
+                                                            src="{{ asset('storage/' . $siswa->foto) }}" 
+                                                            alt="Foto {{ $siswa->user->name }}">
+                                                    @else
+                                                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold">
+                                                            {{ strtoupper(substr($siswa->user->name, 0, 1)) }}
+                                                        </div>
+                                                    @endif
+                                                </div>
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{ $siswa->user->name }}
+                                                </div>
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $siswa->jenis_kelamin }}

@@ -80,6 +80,7 @@ class SuperAdminController extends Controller
         $validated = $request->validate([
             'nama_sma' => 'required|string|max:255|unique:sma_datas,nama_sma',
             'akreditasi_id' => 'required|exists:akreditasis,id',
+            'kuota_siswa' => 'required|integer|min:0',
             'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
@@ -91,6 +92,7 @@ class SuperAdminController extends Controller
         DataSma::create([
             'nama_sma' => $validated['nama_sma'],
             'akreditasi_id' => $validated['akreditasi_id'],
+            'kuota_siswa' => $validated['kuota_siswa'],
             'logo_sma' => $logoPath,
         ]);
 
@@ -109,6 +111,7 @@ class SuperAdminController extends Controller
             'nama_sma' => 'required|string|max:255|unique:sma_datas,nama_sma,' . $sma->id,
             'akreditasi_id' => 'required|exists:akreditasis,id',
             'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'kuota_siswa' => 'required|integer|min:0', 
         ]);
 
         if ($request->hasFile('logo_sma')) {
@@ -125,16 +128,21 @@ class SuperAdminController extends Controller
 
     public function destroySma(DataSma $sma)
     {
+        if ($sma->siswas()->count() > 0) {
+            return redirect()->route('super_admin.data_sma')->with('error', 'Gagal Menghapus! Sekolah ini memiliki ' . $sma->siswas()->count() . ' siswa terdaftar. Hapus data siswa terlebih dahulu');
+        }
+
         if ($sma->logo_sma) {
             Storage::disk('public')->delete($sma->logo_sma);
         }
         $sma->delete();
-        return redirect()->route('super_admin.data_sekolah')->with('success', 'Data sekolah berhasil dihapus.');
+        return redirect()->route('super_admin.data_sma')->with('success', 'Data sekolah berhasil dihapus.');
     }
 
     public function dataAdminSekolah()
     {
-        return view('super_admin.data_admin_sekolah');
+        $admins = User::where('role', 'admin_sekolah')->with('sma')->get();
+        return view('super_admin.data_admin_sma', compact('admins'));
     }
 
     public function createAdminForm()
@@ -164,5 +172,56 @@ class SuperAdminController extends Controller
         ]);
 
         return redirect()->route('super_admin.dashboard')->with('success', 'Admin sekolah berhasil dibuat.');
+    }
+
+    public function editAdminForm(User $admin)
+    {
+        if ($admin->role !== 'admin_sekolah') {
+            return redirect()->route('super_admin.data_admin_sekolah')->with('error', 'Pengguna bukan admin sekolah.');
+        }
+
+        $schools = DataSma::doesntHave('admin')
+            ->orWhere('id', $admin->sma_data_id)
+            ->get();
+
+        return view('super_admin.edit_admin_sma', compact('admin', 'schools'));
+    }
+
+    public function updateAdmin(Request $request, User $admin)
+    {
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($admin->id)],
+            'password' => ['nullable', 'string', 'min:8'],
+            'sma_data_id' => [
+                'required',
+                'exists:sma_datas,id',
+                Rule::unique('users')->ignore($admin->id)->where(fn ($query) => $query->where('role', 'admin_sekolah'))
+            ],
+        ]);
+
+        $data = [
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'sma_data_id' => $validated['sma_data_id'],
+        ];
+
+        if (!empty($validated['password'])) {
+            $data['password'] = Hash::make($validated['password']);
+        }
+
+        $admin->update($data);
+
+        return redirect()->route('super_admin.data_admin_sekolah')->with('success', 'Data admin sekolah berhasil diperbarui.');
+    }
+
+    public function destroyAdmin(User $admin)
+    {
+        if ($admin->role !== 'admin_sekolah') {
+            return redirect()->route('super_admin.data_admin_sekolah')->with('error', 'Hanya admin sekolah yang bisa dihapus.');
+        }
+
+        $admin->delete();
+        return redirect()->route('super_admin.data_admin_sekolah')->with('success', 'Admin sekolah berhasil dihapus.');
     }
 }

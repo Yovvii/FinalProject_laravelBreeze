@@ -26,10 +26,15 @@ Route::middleware(['is_super_admin'])->prefix('super-admin')->group(function () 
     Route::get('/data-sma/tambah', [SuperAdminController::class, 'createSma'])->name('super_admin.sma.create');
     Route::get('/data-sma/{sma}/edit', [SuperAdminController::class, 'editSma'])->name('super_admin.sma.edit');
     Route::put('/data-sma/{sma}', [SuperAdminController::class, 'updateSma'])->name('super_admin.sma.update');
-    Route::delete('/data-sma/{sma}', [SuperAdminController::class, 'updateSma'])->name('super_admin.sma.destroy');
     Route::post('/data-sekolah', [SuperAdminController::class, 'storeSma'])->name('super_admin.sma.store');
+    Route::delete('/data-sma/{sma}', [SuperAdminController::class, 'destroySma'])->name('super_admin.sma.destroy');
 
     Route::get('/data-admin-sekolah', [SuperAdminController::class, 'dataAdminSekolah'])->name('super_admin.data_admin_sekolah');
+    Route::get('/data-admin-sekolah/tambah', [SuperAdminController::class, 'createAdminForm'])->name('super_admin.admin.create');
+    Route::post('/data-admin-sekolah', [SuperAdminController::class, 'storeAdmin'])->name('super_admin.admin.store');
+    Route::get('/data-admin-sekolah/{admin}/edit', [SuperAdminController::class, 'editAdminForm'])->name('super_admin.admin.edit');
+    Route::put('/data-admin-sekolah/{admin}', [SuperAdminController::class, 'updateAdmin'])->name('super_admin.admin.update');
+    Route::delete('/data-admin-sekolah/{admin}', [SuperAdminController::class, 'destroyAdmin'])->name('super_admin.admin.destroy');
 });
 
 // Grup rute untuk Admin Sekolah
