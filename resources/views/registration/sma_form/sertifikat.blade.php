@@ -11,11 +11,11 @@
                 <input type="file" name="sertifikat_file" id="sertifikat_file"
                 class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 <div class="bg-green-500 rounded-full w-5 absolute right-3 top-5">
-                    @if (isset($siswa->sertifikat_file) && $siswa->sertifikat_file)
+                    {{-- @if (isset($siswa->sertifikat_file) && $siswa->sertifikat_file)
                         <svg class="check-akta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-4">
                             <path fill-rule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clip-rule="evenodd" />
                         </svg>
-                    @endif
+                    @endif --}}
                 </div>
             </div>
         </div>

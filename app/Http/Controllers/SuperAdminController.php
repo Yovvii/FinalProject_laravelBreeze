@@ -82,7 +82,9 @@ class SuperAdminController extends Controller
             'akreditasi_id' => 'required|exists:akreditasis,id',
             'kuota_siswa' => 'required|integer|min:0',
             'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
+        ]); 
 
         $logoPath = null;
         if ($request->hasFile('logo_sma')) {
@@ -94,6 +96,8 @@ class SuperAdminController extends Controller
             'akreditasi_id' => $validated['akreditasi_id'],
             'kuota_siswa' => $validated['kuota_siswa'],
             'logo_sma' => $logoPath,
+            'latitude' => $validated['latitude'],
+            'longitude' => $validated['longitude'],
         ]);
 
         return redirect()->route('super_admin.data_sma')->with('success', 'Data sekolah berhasil ditambahkan.');
@@ -112,6 +116,8 @@ class SuperAdminController extends Controller
             'akreditasi_id' => 'required|exists:akreditasis,id',
             'logo_sma' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'kuota_siswa' => 'required|integer|min:0', 
+            'latitude' => 'required|numeric',
+            'longitude' => 'required|numeric',
         ]);
 
         if ($request->hasFile('logo_sma')) {

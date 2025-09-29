@@ -37,6 +37,8 @@ class Siswa extends Model
         'ijazah_file',
         'sertifikat_file',
         'verifikasi_sertifikat',
+        'document_afirmasi',
+        'verifikasi_afirmasi',
 
         'data_sma_id',
         'jalur_pendaftaran_id',

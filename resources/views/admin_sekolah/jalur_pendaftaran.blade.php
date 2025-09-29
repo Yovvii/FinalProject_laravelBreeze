@@ -20,6 +20,10 @@
                         <a href="{{ route('admin.sertifikat_murid') }}">
                             <p class="text-sm text-red-500 content-center hover:text-red-300">Pendaftar Dengan Sertifikat</p>
                         </a>
+                    @elseif ($jalur_id == 2)
+                        <a href="{{ route('admin.afirmasi_murid') }}">
+                            <p class="text-sm text-green-500 content-center hover:text-green-300">Verifikasi Dokumen Afirmasi</p>
+                        </a>
                     @endif
                 </div>
                 
@@ -36,7 +40,10 @@
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sekolah Asal</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Lahir</th>
                                     <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nilai Akhir</th>
-                                    </tr>
+                                    @if ($jalur_id == 2)
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jarak Domisili</th>
+                                    @endif
+                                </tr>
                             </thead>
                             <tbody class="bg-gray-50">
                                 @foreach ($siswas as $siswa)
@@ -60,6 +67,11 @@
                                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                             {{ $siswa->nilai_akhir }}
                                         </td>
+                                        @if ($jalur_id == 2)
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                <span class="text-black">{{ $siswa->jarak_ke_sma_km }}</span> KM
+                                            </td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>

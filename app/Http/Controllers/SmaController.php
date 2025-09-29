@@ -139,6 +139,9 @@ class SmaController extends Controller
         }
 
         $selectedSma = DataSma::find($siswa->data_sma_id) ?? null;
+        $jalurId = $siswa->jalur_pendaftaran_id ?? null;
+        $smaLatitude = $selectedSma->latitude ?? -6.200000;
+        $smaLongitude = $selectedSma->longitude ?? 106.916666;
 
         return view('registration.sma_form.timeline_sma', [
             'currentStep' => (int)$currentStep,
@@ -155,6 +158,10 @@ class SmaController extends Controller
             'selectedSma' => $selectedSma,
 
             'nilaiAkhir' => $nilaiAkhir,
+            'jalurId' => $jalurId,
+
+            'smaLatitude' => $smaLatitude,
+            'smaLongitude'=> $smaLongitude,
         ]);
 
     }
@@ -162,6 +169,8 @@ class SmaController extends Controller
     public function savePendaftaran(Request $request): RedirectResponse
     {
         $currentStep = (int) $request->input('current_step');
+        $siswa = Auth::user()->siswa;
+        $jalurId = $siswa->jalur_pendaftaran_id;    
 
         try {
             DB::beginTransaction();
@@ -174,7 +183,11 @@ class SmaController extends Controller
                     $this->_saveRapor($request);
                     break;
                 case 3:
-                    $this->_saveSertifikat($request);
+                    if ($jalurId == 2) {
+                        $this->_saveAfirmasi($request);
+                    } else {
+                        $this->_saveSertifikat($request);
+                    }
                     break;
                 case 4: 
                     $this->_savePrestasi($request);
@@ -244,7 +257,6 @@ class SmaController extends Controller
         DB::transaction(function () use ($validatedData, $request) {
             $user = Auth::user();
             $user->email = $validatedData['email'];
-            $user->save();
 
             $siswa = $user->siswa ?? new Siswa();
             $siswa->user_id = $user->id;
@@ -354,6 +366,61 @@ class SmaController extends Controller
         $siswa->sertifikat_file = $filePath;
         $siswa->save();
     }
+    }
+
+    private function _saveAfirmasi(Request $request)
+    {
+        // dd($request->all());
+        $validatedData = $request->validate([
+            'document_afirmasi' => 'required|file|mimes:pdf|max:1024',
+            'lat_siswa' => 'required|numeric',
+            'lng_siswa' => 'required|numeric',
+        ]);
+
+        $siswa = Auth::user()->siswa;
+        $selectedSma = DataSma::find($siswa->data_sma_id);
+
+        if (!$siswa) {
+            throw new \Exception('Data siswa atau SMA tidak ditemukan.');
+        }
+
+        if ($request->hasFile('document_afirmasi')) {
+            if ($siswa->document_afirmasi && Storage::disk('public')->exists($siswa->document_afirmasi)) {
+                Storage::disk('public')->delete($siswa->document_afirmasi);
+            }
+
+            $filePath = $request->file('document_afirmasi')->store('document_afirmasi_murid', 'public');
+            $siswa->document_afirmasi = $filePath;
+        }
+
+        $siswa->latitude_siswa = $request->input('lat_siswa');
+        $siswa->longitude_siswa = $request->input('lng_siswa');
+        
+        $distance = $this->calculateDistance(
+            $selectedSma->latitude, $selectedSma->longitude,
+            $siswa->latitude_siswa, $siswa->longitude_siswa
+        );
+        $siswa->jarak_ke_sma_km = round($distance, 2);
+
+        $siswa->save();
+    }
+
+    private function calculateDistance($lat1, $lon1, $lat2, $lon2) 
+    {
+        // Konstanta Jari-jari Bumi dalam Kilometer
+        $earthRadius = 6371; 
+
+        $dLat = deg2rad($lat2 - $lat1);
+        $dLon = deg2rad($lon2 - $lon1);
+
+        $a = sin($dLat / 2) * sin($dLat / 2) +
+            cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
+            sin($dLon / 2) * sin($dLon / 2);
+
+        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+        $distance = $earthRadius * $c; // Jarak dalam KM
+
+        return $distance;
     }
 
     private function _savePrestasi(Request $request)

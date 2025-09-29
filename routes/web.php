@@ -46,6 +46,9 @@ Route::middleware([IsAdminSekolah::class])->group(function () {
     Route::post('/admin/verifikasi_sertifikat/{siswa}', [AdminSekolahController::class, 'verifikasiSertifikat'])->name('admin.verifikasi_sertifikat');
     Route::get('/admin/jalur-pendaftaran', [AdminSekolahController::class, 'showJalurIndex'])->name('admin.jalur_pendaftaran.index');
     Route::get('/admin/jalur-pendaftaran/{jalur_id}', [AdminSekolahController::class, 'showStudentsByJalur'])->name('admin.jalur_pendaftaran.show');
+
+    Route::get('/admin/dokumen-afirmasi', [AdminSekolahController::class, 'showAfirmasiMurid'])->name('admin.afirmasi_murid');
+    Route::post('/admin/verifikasi-afirmasi/{siswa}', [AdminSekolahController::class, 'verifikasiAfirmasi'])->name('admin.verifikasi_afirmasi');
 });
 
 Route::get('/dashboard/test', [SmaController::class, 'testField'])->name('test_field');
