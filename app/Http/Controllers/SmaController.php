@@ -29,6 +29,18 @@ class SmaController extends Controller
      */
     public function index()
     {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $siswa = $user->siswa;
+
+        if ($siswa && $siswa->data_sma_id) {
+            if (!$siswa->jalur_pendaftaran_id) {
+                return redirect()->route('show.jalur.pendaftaran', ['sma_id' => $siswa->data_sma_id]);
+            }
+            
+            return redirect()->route('siswa.peringkat');
+        }
+
         $data_sekolah_sma = DataSma::with('akreditasi')->withCount('siswas')->get();
         return view('pendaftaran_sma', compact('data_sekolah_sma'));
     }
@@ -45,6 +57,33 @@ class SmaController extends Controller
         ]);
         
         $sma_id = $validated['sma_id'];
+        $user = Auth::user();
+        $siswa = $user->siswa;
+
+        if ($siswa && $siswa->data_sma_id !== $sma_id) {
+        // Hapus file fisik jika ada
+            if ($siswa->sertifikat_file && Storage::disk('public')->exists($siswa->sertifikat_file)) {
+                Storage::disk('public')->delete($siswa->sertifikat_file);
+            }
+            if ($siswa->document_afirmasi && Storage::disk('public')->exists($siswa->document_afirmasi)) {
+                Storage::disk('public')->delete($siswa->document_afirmasi);
+            }
+
+            // Reset semua field verifikasi dan file ke NULL
+            $siswa->update([
+                'data_sma_id' => $sma_id, // Update SMA ID
+                'sertifikat_file' => null,
+                'verifikasi_sertifikat' => 'pending',
+                'document_afirmasi' => null,
+                'verifikasi_afirmasi' => 'pending',
+                // Reset jalur pendaftaran agar siswa diarahkan ke pemilihan jalur
+                'jalur_pendaftaran_id' => null, 
+                'status_pendaftaran' => 'in_progress', // Reset status pendaftaran
+            ]);
+        } else if (!$siswa) {
+            // Logika untuk siswa yang baru pertama kali mendaftar (jika perlu)
+        }
+
         $jalur_pendaftaran = JalurPendaftaran::all();
         return view('registration.sma_form.jalur_pendaftaran_sma', compact('jalur_pendaftaran', 'sma_id'));
     }
@@ -78,8 +117,39 @@ class SmaController extends Controller
             }
 
             $siswa = Siswa::firstOrNew(['user_id' => $user->id]);
-            $siswa->jalur_pendaftaran_id = $validated['jalur_pendaftaran_id'];
-            $siswa->data_sma_id = $validated['sma_id'];
+            $old_jalur_id = $siswa->jalur_pendaftaran_id;
+            $old_sma_id = $siswa->data_sma_id;
+
+            $new_jalur_id = $validated['jalur_pendaftaran_id'];
+            $new_sma_id = $validated['sma_id'];
+
+            // --- LOGIKA RESET DATA VERIFIKASI ---
+            $isJalurChanged = ($siswa->exists && $old_jalur_id !== (int)$new_jalur_id && $old_jalur_id !== null);
+            $isSmaChanged = ($siswa->exists && $old_sma_id !== (int)$new_sma_id && $old_sma_id !== null);
+
+            if ($isJalurChanged || $isSmaChanged) {
+                
+                // 1. Hapus file fisik lama jika ada
+                if ($siswa->sertifikat_file && Storage::disk('public')->exists($siswa->sertifikat_file)) {
+                    Storage::disk('public')->delete($siswa->sertifikat_file);
+                }
+                if ($siswa->document_afirmasi && Storage::disk('public')->exists($siswa->document_afirmasi)) {
+                    Storage::disk('public')->delete($siswa->document_afirmasi);
+                }
+
+                // 2. Reset kolom file ke NULL dan status verifikasi ke 'pending'
+                $siswa->sertifikat_file = null;
+                $siswa->verifikasi_sertifikat = 'pending'; // Wajib 'pending' (bukan NULL)
+                $siswa->document_afirmasi = null;
+                $siswa->verifikasi_afirmasi = 'pending';   // Wajib 'pending' (bukan NULL)
+                
+                // Logika reset lain yang mungkin diperlukan (misalnya nilai rapor/jarak)
+                // $siswa->nilai_akhir = null; 
+                // $siswa->jarak_ke_sma_km = null;
+            }
+
+            $siswa->jalur_pendaftaran_id = $new_jalur_id;
+            $siswa->data_sma_id = $new_sma_id;
             // dd($siswa);
             $siswa->save();
 
@@ -183,14 +253,36 @@ class SmaController extends Controller
                     $this->_saveRapor($request);
                     break;
                 case 3:
-                    if ($jalurId == 2) {
+                    if ($jalurId == 1) {
+                        $this->_saveSertifikat($request);
+                    } elseif ($jalurId == 2) {
                         $this->_saveAfirmasi($request);
                     } else {
-                        $this->_saveSertifikat($request);
+                        $this->_saveZonasi($request);
                     }
                     break;
                 case 4: 
-                    $this->_savePrestasi($request);
+                    $this->_saveSubmit($request);
+                
+                    // --- MODIFIKASI DIMULAI DI SINI ---
+                    
+                    // 1. Set status timeline progress (Opsional, pastikan current_step tidak bertambah lagi)
+                    $timelineProgress = Auth::user()->timelineProgress;
+                    
+                    // 2. Tandai timeline sudah mencapai akhir
+                    if (4 > $timelineProgress->current_step) { 
+                        $timelineProgress->current_step = 4;
+                        $timelineProgress->save();
+                    }
+
+                    DB::commit();
+
+                    // 3. Lakukan REDIRECT ke halaman peringkat
+                    return redirect()->route('siswa.peringkat') // Ganti dengan nama route Anda
+                        ->with('success', 'Pendaftaran Anda berhasil diselesaikan! Silakan lihat posisi peringkat Anda.');
+                    
+                    // --- MODIFIKASI SELESAI DI SINI ---
+                    
                     break;
                 default:
                     DB::rollBack();
@@ -423,18 +515,152 @@ class SmaController extends Controller
         return $distance;
     }
 
-    private function _savePrestasi(Request $request)
+    private function _saveZonasi(Request $request)
+    {
+        $siswa = Auth::user()->siswa;
+        $selectedSma = DataSma::find($siswa->data_sma_id);
+
+        if (!$selectedSma) {
+            throw new \Exception('SMA tujuan tidak ditemukan. Silakan ulangi dari Langkah 1.');
+        }
+
+        $request->validate([
+            'lat_siswa' => 'required|numeric',
+            'lng_siswa' => 'required|numeric',
+        ]);
+        
+        $siswa->jalur_pendaftaran_id = 3; 
+        $siswa->data_sma_id = $selectedSma->id; 
+        $siswa->latitude_siswa = $request->input('lat_siswa');
+        $siswa->longitude_siswa = $request->input('lng_siswa');
+        
+        $distance = $this->calculateDistance(
+            $selectedSma->latitude, 
+            $selectedSma->longitude,
+            $siswa->latitude_siswa, 
+            $siswa->longitude_siswa
+        );
+        $siswa->jarak_ke_sma_km = round($distance, 2);
+
+        $siswa->save();
+    }
+
+    private function _saveSubmit(Request $request): RedirectResponse
     {
         $siswa = Auth::user()->siswa;
         $siswa->status_pendaftaran = 'completed';
-        if ($request->has('nilai_akhir')) {
-            $siswa->nilai_akhir = $request->input('nilai_akhir');
-        }
-        
         $siswa->save();
-        Auth::user()->timelineProgress->delete();
-        DB::commit();
-        return redirect()->route('pendaftaran_sma')->with('success', 'Pendaftaran Anda berhasil diselesaikan!');
+        $timelineProgress = Auth::user()->timelineProgress;
+        if (4 > $timelineProgress->current_step) { 
+            $timelineProgress->current_step = 4;
+            $timelineProgress->save();
+        }
+        return redirect()->route('siswa.peringkat')
+            ->with('success', 'Pendaftaran Anda berhasil diselesaikan! Silakan lihat posisi peringkat Anda.');
     }
-    
+
+    public function showPeringkatSiswa()
+    {
+        $siswa = Auth::user()->siswa;
+        
+        // Pastikan siswa sudah mendaftar (status completed) dan memilih SMA
+        if (!$siswa || $siswa->status_pendaftaran != 'completed' || !$siswa->data_sma_id) {
+            return redirect()->route('pendaftaran_sma')->with('gagal', 'Anda belum menyelesaikan pendaftaran.');
+        }
+
+        $sma_id = $siswa->data_sma_id;
+        $jalur_id = $siswa->jalur_pendaftaran_id;
+        
+        // 1. Ambil query dasar untuk semua siswa di SMA dan jalur yang sama
+        $query = Siswa::with('user', 'SekolahAsal')
+            ->where('data_sma_id', $sma_id)
+            ->where('jalur_pendaftaran_id', $jalur_id)
+            ->where('status_pendaftaran', 'completed'); // Hanya hitung yang sudah selesai
+
+        // 2. Tentukan urutan (Sorting) sesuai Jalur Pendaftaran
+        if ($jalur_id == 1) { // Prestasi
+            $query->orderBy(DB::raw("CASE 
+                WHEN verifikasi_sertifikat = 'terverifikasi' THEN 1 
+                ELSE 0 
+            END"), 'desc')->orderByDesc('nilai_akhir')->orderBy('tanggal_lahir', 'asc');
+        } elseif ($jalur_id == 2) { // Afirmasi
+            // Afirmasi harus terverifikasi untuk dihitung di peringkat akhir
+            $query->where('verifikasi_afirmasi', 'terverifikasi')
+                  ->orderBy('jarak_ke_sma_km', 'asc')
+                  ->orderBy('tanggal_lahir', 'asc');
+        } elseif ($jalur_id == 3) { // Zonasi
+            $query->orderBy('jarak_ke_sma_km', 'asc')->orderBy('tanggal_lahir', 'asc');
+        } else {
+            // Jalur Umum/Lainnya (jika ada) diurutkan berdasarkan Nilai/Usia
+            $query->orderByDesc('nilai_akhir')->orderBy('tanggal_lahir', 'asc');
+        }
+
+        // 3. Eksekusi query
+        $allSiswas = $query->get();
+        
+        // 4. Hitung Peringkat Siswa yang sedang login
+        // Laravel's Collection method works well for this
+        $peringkat = $allSiswas->search(function ($item) use ($siswa) {
+            return $item->id === $siswa->id;
+        });
+
+        // Karena index dimulai dari 0, peringkat adalah index + 1
+        $peringkatSiswa = ($peringkat !== false) ? $peringkat + 1 : 'N/A';
+
+        // 5. Kirim data ke view
+        return view('registration.peringkat_murid', [
+            'siswa' => $siswa,
+            'allSiswas' => $allSiswas,
+            'peringkatSiswa' => $peringkatSiswa,
+            'totalPendaftar' => $allSiswas->count(),
+        ]);
+    }
+
+    public function tarikBerkas(Request $request): RedirectResponse
+    {
+        $user = Auth::user();
+        $siswa = $user->siswa;
+
+        if (!$siswa || $siswa->status_pendaftaran !== 'completed') {
+            return redirect()->route('siswa.peringkat')->with('error', 'Pendaftaran belum selesai atau data tidak ditemukan.');
+        }
+
+        try {
+            DB::beginTransaction();
+
+            // 1. Hapus file fisik lama jika ada (Sertifikat dan Afirmasi)
+            if ($siswa->sertifikat_file && Storage::disk('public')->exists($siswa->sertifikat_file)) {
+                Storage::disk('public')->delete($siswa->sertifikat_file);
+            }
+            if ($siswa->document_afirmasi && Storage::disk('public')->exists($siswa->document_afirmasi)) {
+                Storage::disk('public')->delete($siswa->document_afirmasi);
+            }
+
+            // 2. Reset kolom data pendaftaran Siswa
+            $siswa->data_sma_id = null;
+            $siswa->jalur_pendaftaran_id = null;
+            $siswa->sertifikat_file = null;
+            $siswa->verifikasi_sertifikat = 'pending';
+            $siswa->document_afirmasi = null;
+            $siswa->verifikasi_afirmasi = 'pending';
+            $siswa->status_pendaftaran = 'pending'; // Kembali ke status belum selesai
+            
+            $siswa->save();
+
+            // 3. Reset Progress Timeline ke langkah 0 atau 1 (kembali ke awal)
+            $timelineProgress = $user->timelineProgress ?? new TimelineProgress(['user_id' => $user->id]);
+            $timelineProgress->current_step = 0; // Mulai dari pemilihan SMA/Jalur
+            $timelineProgress->sma_id = null;
+            $timelineProgress->save();
+
+            DB::commit();
+
+            return redirect()->route('pendaftaran_sma')->with('berhasil', 'Berkas pendaftaran Anda berhasil ditarik. Silakan lakukan pendaftaran ulang.');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Gagal menarik berkas: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menarik berkas.');
+        }
+    }
 }

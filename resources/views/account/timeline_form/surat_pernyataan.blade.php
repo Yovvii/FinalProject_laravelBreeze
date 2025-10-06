@@ -57,8 +57,9 @@
     <div class="space-y-5 my-7">
         <div class="sm:col-span-3 relative px-2 pt-3 border bg-white rounded-lg">
             <label for="surat_pernyataan" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Upload Surat Pernyataan Kesanggupan</label>
-            <input type="file" name="surat_pernyataan" id="surat_pernyataan"
-            class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+            <input type="file" name="surat_pernyataan" id="surat_pernyataan" 
+                @if (!isset($siswa->surat_pernyataan) || is_null($siswa->surat_pernyataan)) required @endif
+                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
             <div class="bg-green-500 rounded-full w-5 absolute right-3 top-5">
                 @if (isset($siswa->surat_pernyataan) && $siswa->surat_pernyataan)
                     <svg class="check-akta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-4">

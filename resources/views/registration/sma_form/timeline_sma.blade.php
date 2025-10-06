@@ -24,10 +24,12 @@
                     @elseif ($currentStep == 2)
                         @include('account.timeline_form.rapor')
                     @elseif ($currentStep == 3)
-                        @if ($jalurId == 2)
+                        @if ($jalurId == 1)
+                            @include('registration.sma_form.sertifikat')
+                        @elseif ($jalurId == 2)
                             @include('registration.sma_form.dokumen_afirmasi')
                         @else
-                            @include('registration.sma_form.sertifikat')
+                            @include('registration.sma_form.zonasi')
                         @endif
                     @elseif ($currentStep == 4)
                         @include('registration.sma_form.resume_sma')

@@ -22,12 +22,12 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
                             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                         </svg>
-                        <span class="ml-3">Lihat Pengguna</span>
+                        <span class="ml-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('super_admin.data_sma') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('super_admin.data_sma') || request()->routeIs('admin.jalur_pendaftaran.show') || request()->routeIs('admin.sertifikat_murid') ? 'bg-blue-500' : 'bg-blue-900 hover:bg-blue-600' }}">
+                    {{ request()->routeIs('super_admin.data_sma') || request()->routeIs('super_admin.sma.create') || request()->routeIs('super_admin.sma.edit') ? 'bg-blue-500' : 'bg-blue-900 hover:bg-blue-600' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
                         <path fill-rule="evenodd" d="M7.605 2.112a.75.75 0 0 1 .79 0l5.25 3.25A.75.75 0 0 1 13 6.707V12.5h.25a.75.75 0 0 1 0 1.5H2.75a.75.75 0 0 1 0-1.5H3V6.707a.75.75 0 0 1-.645-1.345l5.25-3.25ZM4.5 8.75a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0v-3ZM8 8a.75.75 0 0 0-.75.75v3a.75.75 0 0 0 1.5 0v-3A.75.75 0 0 0 8 8Zm2 .75a.75.75 0 0 1 1.5 0v3a.75.75 0 0 1-1.5 0v-3ZM8 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2Z" clip-rule="evenodd" />
                         </svg>

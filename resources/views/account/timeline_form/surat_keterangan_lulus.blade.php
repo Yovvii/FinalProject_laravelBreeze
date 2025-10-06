@@ -10,7 +10,8 @@
             <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
                 <label for="surat_keterangan_lulus" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Upload Dokumen Surat Keterangan Lulus</label>
                 <input type="file" name="surat_keterangan_lulus" id="surat_keterangan_lulus"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                    @if (!isset($siswa->surat_keterangan_lulus) || is_null($siswa->surat_keterangan_lulus)) required @endif
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 <div class="bg-green-500 rounded-full w-5 absolute right-3 top-5">
                 @if (isset($siswa->surat_keterangan_lulus) && $siswa->surat_keterangan_lulus)
                     <svg class="check-akta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-4">
@@ -22,7 +23,8 @@
             <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
                 <label for="ijazah_file" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Upload Ijazah</label>
                 <input type="file" name="ijazah_file" id="ijazah_file"
-                class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                    @if (!isset($siswa->ijazah_file) || is_null($siswa->ijazah_file)) required @endif
+                    class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                 <div class="bg-green-500 rounded-full w-5 absolute right-3 top-5">
                 @if (isset($siswa->ijazah_file) && $siswa->ijazah_file)
                     <svg class="check-akta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-4">

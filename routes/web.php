@@ -11,10 +11,14 @@ use App\Http\Controllers\SuperAdminController;
 use App\Http\Controllers\PendaftaranController;
 use App\Http\Controllers\ProgressBarController;
 use App\Http\Controllers\AdminSekolahController;
+use App\Http\Controllers\AplicationController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
-Route::get('/', function () {
+Route::get('/welcome', function () {
     return view('welcome');
+});
+Route::get('/', function () {
+    return view('landing_page');
 });
 
 // Rute untuk super admin
@@ -42,13 +46,12 @@ Route::get('/admin/login', [AdminSekolahController::class, 'showLoginForm'])->na
 Route::post('/admin/login', [AdminSekolahController::class, 'login']);
 Route::middleware([IsAdminSekolah::class])->group(function () {
     Route::get('/admin/dashboard', [AdminSekolahController::class, 'dashboard'])->name('admin.dashboard');
-    Route::get('/admin/sertifikat-murid', [AdminSekolahController::class, 'showSertifikatMurid'])->name('admin.sertifikat_murid');
     Route::post('/admin/verifikasi_sertifikat/{siswa}', [AdminSekolahController::class, 'verifikasiSertifikat'])->name('admin.verifikasi_sertifikat');
     Route::get('/admin/jalur-pendaftaran', [AdminSekolahController::class, 'showJalurIndex'])->name('admin.jalur_pendaftaran.index');
     Route::get('/admin/jalur-pendaftaran/{jalur_id}', [AdminSekolahController::class, 'showStudentsByJalur'])->name('admin.jalur_pendaftaran.show');
-
-    Route::get('/admin/dokumen-afirmasi', [AdminSekolahController::class, 'showAfirmasiMurid'])->name('admin.afirmasi_murid');
     Route::post('/admin/verifikasi-afirmasi/{siswa}', [AdminSekolahController::class, 'verifikasiAfirmasi'])->name('admin.verifikasi_afirmasi');
+    Route::get('/admin/peringkat-murid', [AdminSekolahController::class, 'indexPeringkatMurid'])->name('admin.show_peringkat_murid');
+    Route::get('/admin/peringkat-murid/{jalur_id}', [AdminSekolahController::class, 'showPeringkatMurid'])->name('admin.peringkat_murid.show');
 });
 
 Route::get('/dashboard/test', [SmaController::class, 'testField'])->name('test_field');
@@ -72,6 +75,12 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/pendaftaran_sma/resume', [SmaController::class, 'showResume'])->name('resume');
     Route::post('/pendaftaran_sma/save-step', [SmaController::class, 'savePendaftaran'])->name('pendaftaran.sma.save_step');
+    Route::get('/pendaftaran/peringkat', [SmaController::class, 'showPeringkatSiswa'])->name('siswa.peringkat');
+    Route::post('/pendaftaran/tarik-berkas', [SmaController::class, 'tarikBerkas'])->name('siswa.tarik_berkas');
+
+    Route::get('/dashboard-siswa', [PendaftaranController::class, 'showSetelahDashboard'])->name('setelah.dashboard.show');
+
+    Route::get('/notification', [AplicationController::class, 'index'])->name('notification.index');
 });
 
 require __DIR__.'/auth.php';

@@ -1,3 +1,17 @@
+@php
+    use Illuminate\Support\Facades\Auth;
+    
+    // Asumsi: Anda mengimpor model Siswa atau menggunakan relasi Auth::user()->siswa
+    $siswa = Auth::user()->siswa ?? null; 
+    
+    // Tentukan rute tujuan secara kondisional
+    $targetRoute = route('pendaftaran_sma'); // Default
+    
+    if ($siswa && $siswa->status_pendaftaran === 'completed') {
+        // Jika pendaftaran selesai, arahkan ke peringkat
+        $targetRoute = route('siswa.peringkat');
+    }
+@endphp
 <div class="hidden lg:flex min-h-screen">
     <aside class="w-64 bg-blue-700 text-white flex flex-col fixed h-screen">
         <div class="p-6 flex items-center justify-center">
@@ -18,19 +32,32 @@
             <ul class="space-y-4">
                 <li>
                     <a href="{{ route('dashboard') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('dashboard') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M11.5 1L2 6v2h19V6m-5 4v7h3v-7M2 22h19v-3H2m8-9v7h3v-7m-9 0v7h3v-7z"/></svg>
+                    {{ request()->routeIs('dashboard') || request()->routeIs('setelah.dashboard.show') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M11.5 1L2 6v2h19V6m-5 4v7h3v-7M2 22h19v-3H2m8-9v7h3v-7m-9 0v7h3v-7z"/>
+                        </svg>
                         <span class="ml-3">Beranda</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('pendaftaran_sma') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran.sma.timeline') || request()->routeIs('jalur_pendaftaran') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="currentColor" d="M13 19c0 1.1.3 2.12.81 3H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h1v7l2.5-1.5L12 9V2h6a2 2 0 0 1 2 2v9.09c-.33-.05-.66-.09-1-.09c-3.31 0-6 2.69-6 6m10 0l-3-3v2h-4v2h4v2z"/></svg>
+                    <a href="{{ $targetRoute }}" class="flex items-center px-3 py-2 rounded-lg
+                    {{ request()->routeIs('pendaftaran_sma') || request()->routeIs('pendaftaran.sma.timeline') || request()->routeIs('jalur_pendaftaran') || request()->routeIs('siswa.peringkat') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M13 19c0 1.1.3 2.12.81 3H6c-1.11 0-2-.89-2-2V4a2 2 0 0 1 2-2h1v7l2.5-1.5L12 9V2h6a2 2 0 0 1 2 2v9.09c-.33-.05-.66-.09-1-.09c-3.31 0-6 2.69-6 6m10 0l-3-3v2h-4v2h4v2z"/>
+                        </svg>
                         <span class="ml-3">Pendaftaran SMA</span>
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('notification.index') }}" class="flex items-center px-3 py-2 rounded-lg
+                    {{ request()->routeIs('notification.index') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M12 5a4 4 0 0 0-8 0v2.379a1.5 1.5 0 0 1-.44 1.06L2.294 9.707a1 1 0 0 0-.293.707V11a1 1 0 0 0 1 1h2a3 3 0 1 0 6 0h2a1 1 0 0 0 1-1v-.586a1 1 0 0 0-.293-.707L12.44 8.44A1.5 1.5 0 0 1 12 7.38V5Zm-5.5 7a1.5 1.5 0 0 0 3 0h-3Z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-3">Notification</span>
+                    </a>
+                </li>
+                {{-- <li>
                     <a href="{{ route('test_field') }}" class="flex items-center px-3 py-2 rounded-lg
                     {{ request()->routeIs('test_field') || request()->routeIs('test_field') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
@@ -38,7 +65,7 @@
                         </svg>
                         <span class="ml-3">Test Field</span>
                     </a>
-                </li>
+                </li> --}}
                 <li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf

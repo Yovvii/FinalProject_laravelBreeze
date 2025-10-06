@@ -22,16 +22,26 @@
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
                             <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM12.735 14c.618 0 1.093-.561.872-1.139a6.002 6.002 0 0 0-11.215 0c-.22.578.254 1.139.872 1.139h9.47Z" />
                         </svg>
-                        <span class="ml-3">Daftar Calon Murid</span>
+                        <span class="ml-3">Dashboard</span>
                     </a>
                 </li>
                 <li>
                     <a href="{{ route('admin.jalur_pendaftaran.index') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('admin.jalur_pendaftaran.index') || request()->routeIs('admin.jalur_pendaftaran.show') || request()->routeIs('admin.sertifikat_murid') ? 'bg-blue-500' : 'bg-blue-900 hover:bg-blue-600' }}">
+                    {{ request()->routeIs('admin.jalur_pendaftaran.index') || request()->routeIs('admin.jalur_pendaftaran.show') ? 'bg-blue-500' : 'bg-blue-900 hover:bg-blue-600' }}">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
-                            <path d="M2.87 2.298a.75.75 0 0 0-.812 1.021L3.39 6.624a1 1 0 0 0 .928.626H8.25a.75.75 0 0 1 0 1.5H4.318a1 1 0 0 0-.927.626l-1.333 3.305a.75.75 0 0 0 .811 1.022 24.89 24.89 0 0 0 11.668-5.115.75.75 0 0 0 0-1.175A24.89 24.89 0 0 0 2.869 2.298Z" />
+                            <path fill-rule="evenodd" d="M1 3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v6a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V3Zm9 3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm-6.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM11.5 6A.75.75 0 1 1 13 6a.75.75 0 0 1-1.5 0Z" clip-rule="evenodd" />
+                            <path d="M13 11.75a.75.75 0 0 0-1.5 0v.179c0 .15-.138.28-.306.255A65.277 65.277 0 0 0 1.75 11.5a.75.75 0 0 0 0 1.5c3.135 0 6.215.228 9.227.668A1.764 1.764 0 0 0 13 11.928v-.178Z" />
                         </svg>
-                        <span class="ml-3">Siswa Per Jalur</span>
+                        <span class="ml-3">Cek Validasi</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.show_peringkat_murid') }}" class="flex items-center px-3 py-2 rounded-lg
+                    {{ request()->routeIs('admin.show_peringkat_murid') || request()->routeIs('admin.peringkat_murid.show') ? 'bg-blue-500' : 'bg-blue-900 hover:bg-blue-600' }}">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
+                            <path fill-rule="evenodd" d="M2 2.75A.75.75 0 0 1 2.75 2h9.5a.75.75 0 0 1 0 1.5h-9.5A.75.75 0 0 1 2 2.75ZM2 6.25a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5A.75.75 0 0 1 2 6.25Zm0 3.5A.75.75 0 0 1 2.75 9h3.5a.75.75 0 0 1 0 1.5h-3.5A.75.75 0 0 1 2 9.75ZM9.22 9.53a.75.75 0 0 1 0-1.06l2.25-2.25a.75.75 0 0 1 1.06 0l2.25 2.25a.75.75 0 0 1-1.06 1.06l-.97-.97v5.69a.75.75 0 0 1-1.5 0V8.56l-.97.97a.75.75 0 0 1-1.06 0Z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="ml-3">Peringkat Murid</span>
                     </a>
                 </li>
                 {{-- <li>

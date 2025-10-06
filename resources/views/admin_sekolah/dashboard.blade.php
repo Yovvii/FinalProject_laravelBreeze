@@ -4,63 +4,56 @@
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                <h3 class="text-lg font-semibold mb-4">Daftar Calon Murid Baru</h3>
-                
-                @if ($siswas->isEmpty())
-                    <div class="text-center text-gray-500">
-                        Belum ada siswa terdaftar dari sekolah Anda.
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-lg font-semibold">Ringkasan Pendaftaran Calon Siswa</h3>
+                </div>
+
+                {{-- SUMMARY CARDS ROW 1: TOTAL PENDAFTAR PER JALUR --}}
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                    {{-- Total Siswa --}}
+                    <div class="bg-blue-500 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_siswa }}</p>
+                        <p class="mt-2 text-sm">Total Pendaftar</p>
                     </div>
-                @else
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama Siswa</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Kelamin</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sekolah Asal</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal Lahir</th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jalur Pendaftaran</th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white">
-                                @foreach ($siswas as $siswa)
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10 mr-4">
-                                                    @if ($siswa->foto)
-                                                        <img class="h-10 w-10 rounded-full object-cover" 
-                                                            src="{{ asset('storage/' . $siswa->foto) }}" 
-                                                            alt="Foto {{ $siswa->user->name }}">
-                                                    @else
-                                                        <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 font-bold">
-                                                            {{ strtoupper(substr($siswa->user->name, 0, 1)) }}
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                                <div class="text-sm font-medium text-gray-900">
-                                                    {{ $siswa->user->name }}
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $siswa->jenis_kelamin }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $siswa->sekolahAsal->nama_sekolah }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $siswa->tanggal_lahir }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ $siswa->jalurPendaftaran->nama_jalur_pendaftaran }}
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+
+                    {{-- Total Prestasi (Asumsi ID 1) --}}
+                    <div class="bg-green-500 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_prestasi }}</p>
+                        <p class="mt-2 text-sm">Jalur Prestasi</p>
                     </div>
-                @endif
+                    
+                    {{-- Total Afirmasi (Asumsi ID 2) --}}
+                    <div class="bg-yellow-500 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_afirmasi }}</p>
+                        <p class="mt-2 text-sm">Jalur Afirmasi</p>
+                    </div>
+                    
+                    {{-- Total Zonasi (Asumsi ID 3) --}}
+                    <div class="bg-red-500 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_zonasi }}</p>
+                        <p class="mt-2 text-sm">Jalur Zonasi</p>
+                    </div>
+                </div>
+
+                <h4 class="text-lg font-semibold mb-4">Ringkasan Verifikasi Dokumen</h4>
+
+                {{-- SUMMARY CARDS ROW 2: STATUS VERIFIKASI DITOLAK --}}
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    
+                    {{-- DITOLAK SERTIFIKAT/PRESTASI --}}
+                    <div class="bg-gray-400 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_ditolak_sertifikat }}</p>
+                        <p class="mt-2 text-sm">Sertifikat/Berkas Prestasi Ditolak</p>
+                    </div>
+
+                    {{-- DITOLAK AFIRMASI --}}
+                    <div class="bg-gray-700 text-white p-6 rounded-lg shadow-md">
+                        <p class="text-3xl font-bold">{{ $total_ditolak_afirmasi }}</p>
+                        <p class="mt-2 text-sm">Dokumen Afirmasi Ditolak</p>
+                    </div>
+                    
+                    {{-- Tambahkan card lain di sini jika diperlukan (misal: Total Siswa Menunggu Verifikasi) --}}
+                </div>
             </div>
         </div>
     </div>

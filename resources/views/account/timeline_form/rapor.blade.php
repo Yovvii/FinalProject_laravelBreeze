@@ -25,7 +25,10 @@
                 <div class="sm:col-span-6 xl:col-span-2 relative px-3 pt-3 bg-white rounded-lg">
                     <label for="rapor_file_{{ $semester }}" class="absolute left-3 px-1 text-xs bg-white text-gray-700 font-bold">Upload Scan Rapor Semester {{ $semester }} (PDF)</label>
                     <input type="file" name="rapor_file[{{ $semester }}]" id="rapor_file_{{ $semester }}"
-                           class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
+                        @php
+                            $currentRapor = $raporFiles->firstWhere('semester', $semester);
+                        @endphp
+                        class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
                     <div class="bg-green-500 rounded-full w-5 absolute right-3 top-5">
                         @if ($raporFiles->firstWhere('semester', $semester))
                             <svg class="check-akta" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" class="size-4">

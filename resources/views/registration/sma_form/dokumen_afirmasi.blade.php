@@ -7,7 +7,7 @@
             <p>Upload Document</p>
             <span class="font-bold">KIP/PKH</span>
             
-            <div class="space-y-5 my-7">
+            <div class="space-y-5 mt-5">
                 <div class="sm:col-span-3 relative px-2 pt-3 border bg-white rounded-lg">
                     <label for="document_afirmasi" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Upload KIP/PKH Wajib</label>
                     <input type="file" name="document_afirmasi" id="document_afirmasi" 
@@ -29,9 +29,16 @@
                 @error('document_afirmasi')
                     <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                 @enderror
-            </div>
 
+                <div>
+                    <p class="text-xs text-gray-700">
+                        <span class="font-extrabold text-base text-black">Catatan :</span> <br>
+                        Pastikan file dokumen yang di upload asli<br>
+                        Ekstensi file PDF berukuran maksimal 500 KB
+                    </p>
+                </div>
             </div>
+        </div>
     </div>
     
     <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4 border border-blue-200">

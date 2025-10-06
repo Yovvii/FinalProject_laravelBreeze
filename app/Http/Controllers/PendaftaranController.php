@@ -48,6 +48,10 @@ class PendaftaranController extends Controller
             ];
         }
 
+        if ($siswa && $siswa->status_pendaftaran_akun === 'completed') {
+            return redirect()->route('setelah.dashboard.show');
+        }
+
         return view('dashboard', [
             'currentStep' => (int)$currentStep,
             'siswa' => $siswa,
@@ -170,23 +174,48 @@ class PendaftaranController extends Controller
 
         return redirect()->route('dashboard')->with('success', 'Biodata berhasil disimpan!');
     }
-
+    
     private function _saveRapor(Request $request)
     {
         try {
-            // Validasi data rapor
-            $validated = $request->validate([
+            $userId = Auth::id();
+            $dataNilai = $request->input('nilai', []);
+            
+            // 1. Ambil file rapor yang sudah ada di database untuk user ini
+            $existingRaporFiles = RaporFile::where('user_id', $userId)
+                                        ->pluck('file_rapor', 'semester');
+
+            // 2. Tentukan aturan dasar untuk file dan non-file
+            $baseRules = [
                 'nilai' => 'required|array|max:100',
                 'rapor_file' => 'nullable|array',
-                'rapor_file.*' => 'nullable|mimes:pdf|max:1000'
-            ]);
+            ];
+            $fileBaseRules = 'mimes:pdf|max:1000'; // Aturan untuk tipe dan ukuran file
 
+            // 3. Bangun aturan validasi file secara dinamis
+            foreach (array_keys($dataNilai) as $semester) {
+                $fileKey = "rapor_file.{$semester}";
+                
+                // Cek apakah file untuk semester ini sudah ada
+                if ($existingRaporFiles->has((int)$semester)) {
+                    // Jika sudah ada, upload file baru bersifat opsional
+                    $baseRules[$fileKey] = 'nullable|' . $fileBaseRules;
+                } else {
+                    // Jika belum ada, upload file baru wajib (required)
+                    $baseRules[$fileKey] = 'required|' . $fileBaseRules;
+                }
+            }
+
+            // 4. Lakukan validasi dengan aturan yang telah dibuat
+            $validated = $request->validate($baseRules);
+
+            // --- Logika Penyimpanan Data (Tetap sama seperti yang Anda miliki) ---
+            
             DB::beginTransaction();
 
-            $userId = Auth::id();
             $dataNilai = $validated['nilai'];
             $mapels = Mapel::all();
-            $rapor_file = RaporFile::all();
+            // $rapor_file = RaporFile::all(); // Baris ini tidak diperlukan di sini
 
             foreach ($dataNilai as $semester => $nilaiMapel) {
                 if ($request->hasFile("rapor_file.{$semester}")) {
@@ -194,8 +223,12 @@ class PendaftaranController extends Controller
 
                     $existingRaporFile = RaporFile::where('user_id', $userId)->where('semester', $semester)->first();
 
+                    // Logika menghapus file lama
                     if ($existingRaporFile && Storage::disk('public')->exists($existingRaporFile->file_rapor)) {
-                        Storage::disk('public')->delete($existingRaporFile->file_rapor);
+                        // Catatan: Jika $existingRaporFile->file_rapor hanya berisi nama file, 
+                        // Anda mungkin perlu menyesuaikan path di sini agar benar:
+                        // Storage::disk('public')->delete('rapor_murid/' . $userId . '/' . $existingRaporFile->file_rapor);
+                        Storage::disk('public')->delete($existingRaporFile->file_rapor); // Mengikuti asumsi kode Anda
                     }
                     
                     $fileName = $file->hashName('rapor_murid/' . $userId);
@@ -207,7 +240,8 @@ class PendaftaranController extends Controller
                         ['file_rapor' => $fileName]
                     );
                 }
-
+                
+                // ... (Logika penyimpanan nilai semester) ...
                 foreach ($nilaiMapel as $namaMapel => $nilai) {
                     $namaMapelDariForm = Str::replace('_', ' ', $namaMapel);
 
@@ -286,8 +320,22 @@ class PendaftaranController extends Controller
                 $siswa->ijazah_file = $request->file('ijazah_file')->store('ijazah_file', 'public');
                 $siswa->save();
             }
+            if ($request->input('current_step') == 4) {
+                $siswa->status_pendaftaran_akun = 'completed'; // Tambahkan kolom status baru
+                $siswa->save();
+            }
         });
 
         return redirect()->route('dashboard')->with('success', 'Surat Keterangan Lulus dan Ijazah berhasil disubmit!');
+    }
+
+    public function showSetelahDashboard()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        $user->load('siswa.dataSma', 'siswa.jalurPendaftaran');
+        $siswa = $user->siswa;
+        
+        return view('setelah_dashboard', compact('siswa'));
     }
 }

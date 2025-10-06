@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Redirect;
 
 class SuperAdminController extends Controller
 {
@@ -106,6 +107,9 @@ class SuperAdminController extends Controller
     public function editSma(DataSma $sma)
     {
         $akreditasis = Akreditasi::all();
+        if ($sma->siswas()->count() > 0) {
+            return redirect()->route('super_admin.data_sma')->with('error', 'Data tidak bisa diedit! Sekolah ini memiliki ' . $sma->siswas()->count() . ' siswa terdaftar. Hapus data siswa terlebih dahulu');
+        }
         return view('super_admin.form_sma', compact('sma', 'akreditasis'));
     }
 

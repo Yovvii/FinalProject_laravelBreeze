@@ -1,5 +1,6 @@
 import defaultTheme from 'tailwindcss/defaultTheme';
 import forms from '@tailwindcss/forms';
+import 'tailwindcss';
 
 /** @type {import('tailwindcss').Config} */
 export default {
@@ -24,6 +25,9 @@ export default {
         extend: {
             fontFamily: {
                 sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                montaga: ['"Montaga"', 'serif'],
+                poppins: ['"Poppins"', 'sans-serif'],
+                noto_serif: ['"Noto Serif"', 'serif'],
             },
         },
     },
