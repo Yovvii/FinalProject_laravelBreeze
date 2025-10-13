@@ -9,6 +9,8 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use App\Models\TimelineProgress;
 use Illuminate\Validation\Rules;
+use App\Traits\LogsStudentActions;
+use App\Models\NotificationHistory;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +19,7 @@ use Illuminate\Auth\Events\Registered;
 
 class RegisteredUserController extends Controller
 {
+    use LogsStudentActions;
     /**
      * Display the registration view.
      */
@@ -61,10 +64,18 @@ class RegisteredUserController extends Controller
             'tanggal_lahir' => $request->tanggal_lahir,
         ]);
 
+        NotificationHistory::create([
+            'user_id' => $user->id,
+            'type' => 'success',
+            'message' => 'Selamat! Akun Anda berhasil dibuat. Silahkan lanjutkan ke proses Login.',
+            'is_read' => false,
+        ]);
+
         event(new Registered($user));
 
         // Auth::login($user);
 
-        return redirect(route('login'))->with('success', 'Pendaftaran berhasil! Silahkan login kembali.');
+        // return redirect(route('landing_page'))->with('success', 'Pendaftaran berhasil! Silahkan login kembali.');
+        return $this->logAndRedirect('landing_page', 'success', 'Pendaftaran berhasil! Silahkan login kembali.');
     }
 }

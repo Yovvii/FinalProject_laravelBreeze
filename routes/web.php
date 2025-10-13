@@ -19,7 +19,7 @@ Route::get('/welcome', function () {
 });
 Route::get('/', function () {
     return view('landing_page');
-});
+})->name('landing_page');
 
 // Rute untuk super admin
 Route::get('/superadmin/login', [SuperAdminController::class, 'showLoginForm'])->name('superadmin.login.form');
@@ -39,6 +39,10 @@ Route::middleware(['is_super_admin'])->prefix('super-admin')->group(function () 
     Route::get('/data-admin-sekolah/{admin}/edit', [SuperAdminController::class, 'editAdminForm'])->name('super_admin.admin.edit');
     Route::put('/data-admin-sekolah/{admin}', [SuperAdminController::class, 'updateAdmin'])->name('super_admin.admin.update');
     Route::delete('/data-admin-sekolah/{admin}', [SuperAdminController::class, 'destroyAdmin'])->name('super_admin.admin.destroy');
+
+    Route::post('/ppdb/hentikan-dan-tentukan', [SuperAdminController::class, 'stopSpmbAndDetermineAcceptance'])->name('super_admin.ppdb.stop');
+    Route::get('/data-diterima', [SuperAdminController::class, 'showAcceptedStudents'])->name('super_admin.data_diterima');
+    Route::post('/spmb/reset-status', [SuperAdminController::class, 'resetSpmbStatus'])->name('super_admin.spmb.reset');
 });
 
 // Grup rute untuk Admin Sekolah
@@ -54,8 +58,8 @@ Route::middleware([IsAdminSekolah::class])->group(function () {
     Route::get('/admin/peringkat-murid/{jalur_id}', [AdminSekolahController::class, 'showPeringkatMurid'])->name('admin.peringkat_murid.show');
 });
 
-Route::get('/dashboard/test', [SmaController::class, 'testField'])->name('test_field');
-Route::get('/dashboard/progress_bar', [ProgressBarController::class, 'index'])->name('progress_bar');
+// Route::get('/dashboard/test', [SmaController::class, 'testField'])->name('test_field');
+// Route::get('/dashboard/progress_bar', [ProgressBarController::class, 'index'])->name('progress_bar');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -80,7 +84,22 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/dashboard-siswa', [PendaftaranController::class, 'showSetelahDashboard'])->name('setelah.dashboard.show');
 
+    Route::delete('/notifications/clear', [AplicationController::class, 'clearAll'])->name('notification.clear_all');
+    Route::delete('/notifications/{notification}', [AplicationController::class, 'destroy'])->name('notification.destroy');
     Route::get('/notification', [AplicationController::class, 'index'])->name('notification.index');
+    Route::post('/notifications/mark-read', [AplicationController::class, 'markAllAsRead'])->name('notification.mark_read'); 
+
+    // Rute untuk menampilkan halaman profil utama siswa
+    Route::get('/profile/settings', [ProfileController::class, 'showSettings'])->name('profile.settings');
+    Route::get('/profile/edit/biodata', [ProfileController::class, 'editBiodata'])->name('profile.edit.biodata');
+    Route::post('/profile/update/biodata', [ProfileController::class, 'updateBiodata'])->name('profile.update.biodata');
+    Route::get('/profile/edit/nilai', [ProfileController::class, 'editNilai'])->name('profile.edit.nilai');
+    Route::post('/profile/update/nilai', [ProfileController::class, 'updateNilai'])->name('profile.update.nilai');
+    Route::get('/profile/edit/dokumen', [ProfileController::class, 'editDokumen'])->name('profile.edit.dokumen');
+    Route::post('/profile/update/dokumen', [ProfileController::class, 'updateDokumen'])->name('profile.update.dokumen');
+    Route::post('/profile/reset/biodata', [ProfileController::class, 'resetBiodata'])->name('profile.reset.biodata');
+    Route::post('/profile/reset/nilai', [ProfileController::class, 'resetNilai'])->name('profile.reset.nilai');
+    Route::post('/profile/reset/dokumen', [ProfileController::class, 'resetDokumen'])->name('profile.reset.dokumen');
 });
 
 require __DIR__.'/auth.php';

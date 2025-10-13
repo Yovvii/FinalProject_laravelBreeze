@@ -44,6 +44,11 @@ class Siswa extends Model
         'jalur_pendaftaran_id',
         'nilai_akhir',
         'status_pendaftaran',
+
+        'longitude_siswa',
+        'latitude_siswa',
+
+        'has_completed_steps'
       ];
       
     public function user(): BelongsTo
@@ -74,5 +79,75 @@ class Siswa extends Model
     public function semesters(): HasMany
     {
         return $this->hasMany(Semester::class, 'user_id', 'user_id');
+    }
+    
+    public function raporFiles(): HasMany
+    {
+        return $this->hasMany(RaporFile::class, 'user_id');
+    }
+
+    public function activities()
+    {
+        return $this->hasMany(StudentActivity::class);
+    }
+    
+    public function isDataLengkap()
+    {
+        // dd("KODE isDataLengkap() DIEKSEKUSI!"); 
+        $requiredFields = [
+            // siswa tabel
+            'user_id',
+            'nisn',
+            'jenis_kelamin',
+            'tanggal_lahir',
+            'kabupaten',
+            'kecamatan',
+            'desa',
+            'alamat',
+            'no_kk',
+            'nik',
+            'no_hp',
+            'nama_ayah',
+            'nama_ibu',
+            'agama',
+            'sekolah_asal_id',
+            'akta_file',
+            'foto',
+            'surat_pernyataan',
+            'surat_keterangan_lulus',
+            'ijazah_file',
+            'longitude_siswa',
+            'latitude_siswa',
+
+            // semester table
+            'nilai_semester',
+            'file_rapor',
+        ];
+        
+        // dd("KODE isDataLengkap() DIEKSEKUSI!"); 
+
+        // foreach ($requiredFields as $field) {
+        //     if (is_null($this->{$field}) || $this->{$field} === '') {
+        //         dd("Data Belum Lengkap. Kolom yang kosong: " . $field . " (Diperiksa di Model Siswa)");
+        //     }
+        // }
+
+        $REQUIRED_SEMESTERS = 5;
+        $rapor_file_count = $this->raporFiles()->count();
+        if ($rapor_file_count < $REQUIRED_SEMESTERS) {
+            // Hanya ada {rapor_file_count} file rapor yang diunggah, seharusnya 5.
+            return false;
+        }
+        $nilai_semester_count = $this->semesters()->distinct('semester')->count();
+        if ($nilai_semester_count < $REQUIRED_SEMESTERS) {
+            // Hanya {nilai_semester_count} semester yang memiliki data, seharusnya 5.
+            return false;
+        }
+
+        if (!$this->ortu) {
+            return false;
+        }
+
+        return true;
     }
 }

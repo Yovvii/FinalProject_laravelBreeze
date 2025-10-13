@@ -7,8 +7,11 @@
 
     <div class="py-5">
         <div class="max-w-7xl mx-auto sm:px-4 lg:px-6">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-4">
-                <div class="border border-gray-400 p-6 rounded-lg space-y-[30px]">
+            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
+                <div class="bg-blue-600 py-4">
+                    <p class="text-white text-center font-poppins text-2xl font-semibold">Daftar SMA Kabupaten Purbalingga</p>
+                </div>
+                <div class="border border-gray-400 p-6 rounded-lg space-y-[30px] m-4">
                     @foreach ($data_sekolah_sma as $data_sma)
                         <div class="flex justify-between py-3 px-4 border-b-2 border-gray-100">
                             <div class="flex my-auto">

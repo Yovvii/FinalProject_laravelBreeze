@@ -10,7 +10,7 @@
                 </div>
                 
                 <h1 class="text-4xl font-extrabold text-gray-900 text-center mb-8">
-                    Sistem Pendaftaran PPDB 2024/2025
+                    Sistem Penerimaan Murid Baru 2026/2027
                 </h1>
 
                 <div class="text-gray-700 space-y-4 p-4 border border-gray-100 rounded-lg">
@@ -28,10 +28,7 @@
 
                     <h3 class="text-xl font-semibold mt-6 text-gray-800 border-b pb-2 pt-4">Informasi Penting</h3>
                     <p>
-                        Untuk memantau status verifikasi dokumen atau melihat kelengkapan berkas, silakan gunakan menu navigasi utama untuk menuju halaman **Timeline Pendaftaran SMA**.
-                    </p>
-                    <p>
-                        Jika Anda ingin membatalkan pendaftaran dan memilih sekolah lain, Anda harus melakukan proses **Penarikan Berkas** melalui laman Timeline Pendaftaran SMA.
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Perferendis delectus culpa a voluptatem qui sapiente autem quam, quod, facilis dolores modi! Qui sint numquam deleniti quisquam dolores accusamus officia sunt pariatur blanditiis! Totam perspiciatis ducimus quo officia eveniet tempora hic voluptates maxime animi fuga officiis soluta non, quasi nobis beatae?
                     </p>
                 </div>
                 

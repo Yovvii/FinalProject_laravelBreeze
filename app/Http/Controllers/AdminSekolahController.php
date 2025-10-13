@@ -3,15 +3,25 @@
 namespace App\Http\Controllers;
 
 use App\Models\Siswa;
+use App\Models\DataSma;
+use App\Models\SpmbStatus;
 use Illuminate\Http\Request;
 use App\Models\JalurPendaftaran;
+use App\Traits\LogsStudentActions;
 use Illuminate\Support\Facades\DB;
+use App\Models\NotificationHistory;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Validation\ValidationException;
 
 class AdminSekolahController extends Controller
 {
+    private const KUOTA_PERSEN = [
+        '1' => 0.15, // 15% (Jalur 1)
+        '2' => 0.25, // 25% (Jalur 2)
+        '3' => 0.60, // 60% (Jalur 3 / Zonasi)
+    ];
+    use LogsStudentActions;
     public function showLoginForm()
     {
         return view('admin_sekolah.login');
@@ -78,6 +88,8 @@ class AdminSekolahController extends Controller
         $admin = Auth::user();
         $siswas = collect();
         $jalurs = JalurPendaftaran::all();
+        $spmb_status = SpmbStatus::first();
+        $selection_ended = ($spmb_status && $spmb_status->status === 'closed');
         
         if ($admin->sma_data_id) {
             $baseQuery = Siswa::whereHas('DataSma', function ($q) use ($admin) {
@@ -107,6 +119,7 @@ class AdminSekolahController extends Controller
                 $latSma = $dataSma->latitude ?? 0;
                 $lngSma = $dataSma->longitude ?? 0;
                 
+                
                 // Loop untuk menghitung jarak dan menambahkan properti
                 foreach ($siswas as $siswa) {
                     // Gunakan properti jarak yang sudah disimpan saat pendaftaran (jika ada)
@@ -133,7 +146,7 @@ class AdminSekolahController extends Controller
             }
         }
         
-        return view('admin_sekolah.jalur_pendaftaran', compact('siswas', 'jalurs', 'jalur_id'));
+        return view('admin_sekolah.jalur_pendaftaran', compact('siswas', 'jalurs', 'jalur_id', 'selection_ended'));
     }
     
     public function showJalurIndex()
@@ -153,11 +166,40 @@ class AdminSekolahController extends Controller
         $request->validate([
             'status' => 'required|in:terverifikasi,ditolak,pending',
         ]);
-
+        
         $siswa->verifikasi_sertifikat = $request->status;
         $siswa->save();
+        
+        $notificationMessage = '';
+        $notificationType = '';
+        $flashMessage = '';
 
-        return redirect()->back()->with('berhasil', 'Status sertifikat berhasil diperbarui.');
+        if ($request->status === 'terverifikasi') {
+            $notificationMessage = 'Selamat! Dokumen sertifikat Anda untuk jalur prestasi telah Terverifikasi oleh Admin Sekolah.';
+            $notificationType = 'success';
+            $flashMessage = 'Status sertifikat berhasil Diverifikasi.';
+        } elseif ($request->status === 'ditolak') {
+            $notificationMessage = 'Mohon maaf, dokumen sertifikat Anda untuk jalur prestasi telah Ditolak oleh Admin Sekolah. Peringkat akan disesuaikan dengan Nilai Akhir, atau anda juga bisa melakukan pendaftaran ulang';
+            $notificationType = 'error';
+            $flashMessage = 'Status sertifikat berhasil Ditolak.';
+        } else {
+            // Kasus 'pending' atau status lain (opsional, bisa dihilangkan jika tidak perlu notifikasi)
+            $notificationMessage = 'Status dokumen sertifikat Anda diubah menjadi **PENDING** oleh Admin Sekolah.';
+            $notificationType = 'info';
+            $flashMessage = 'Status sertifikat berhasil diperbarui menjadi PENDING.';
+        }
+        
+        // Simpan notifikasi ke NotificationHistory
+        NotificationHistory::create([
+            // User ID yang menerima notifikasi (ID siswa)
+            'user_id' => $siswa->user_id, 
+            'type' => $notificationType,
+            'message' => $notificationMessage,
+            'is_read' => false,
+            'created_by_user_id' => Auth::id(), 
+        ]);
+        
+        return redirect()->back()->with('success', $flashMessage);
     }
 
     public function verifikasiAfirmasi(Request $request, Siswa $siswa)
@@ -169,7 +211,36 @@ class AdminSekolahController extends Controller
         $siswa->verifikasi_afirmasi = $request->status;
         $siswa->save();
 
-        return redirect()->back()->with('berhasil', 'Status sertifikat berhasil diperbarui.');
+        $notificationMessage = '';
+        $notificationType = '';
+        $flashMessage = '';
+
+        if ($request->status === 'terverifikasi') {
+            $notificationMessage = 'Selamat! Dokumen afirmasi Anda untuk jalur afirmasi telah Terverifikasi.';
+            $notificationType = 'success';
+            $flashMessage = 'Status dokumen afirmasi Terverifikasi.';
+        } elseif ($request->status === 'ditolak') {
+            $notificationMessage = 'Mohon maaf, dokumen afirmasi Anda untuk jalur afirmasi telah Ditolak oleh Admin Sekolah. Silakan lakukan pendaftaran ulang';
+            $notificationType = 'error';
+            $flashMessage = 'Status dokumen afirmasi Ditolak.';
+        } else {
+            // Kasus 'pending'
+            $notificationMessage = 'Status dokumen afirmasi Anda diubah menjadi **PENDING** oleh Admin Sekolah.';
+            $notificationType = 'info';
+            $flashMessage = 'Status dokumen afirmasi berhasil diperbarui menjadi PENDING.';
+        }
+
+        // Simpan notifikasi ke NotificationHistory
+        // User ID penerima notifikasi adalah user_id dari siswa yang diverifikasi
+        NotificationHistory::create([
+            'user_id' => $siswa->user_id, 
+            'type' => $notificationType,
+            'message' => $notificationMessage,
+            'is_read' => false,
+            'created_by_user_id' => Auth::id(), // Opsional: Mencatat Admin yang melakukan tindakan
+        ]);
+
+        return redirect()->back()->with('success', $flashMessage);
     }
 
     private function calculateDistance($lat1, $lon1, $lat2, $lon2) 
@@ -208,6 +279,20 @@ class AdminSekolahController extends Controller
         $sma_id = $admin->sma_data_id;
         $jalurs = JalurPendaftaran::all();
         $siswas = collect();
+        $ppdb_status = SpmbStatus::first();
+        $selection_ended = ($ppdb_status && $ppdb_status->status === 'closed');
+
+        $kuotaJalur = 0;
+        if ($sma_id) {
+            // 1. Ambil Data SMA
+            $smaData = DataSma::find($sma_id);
+            $totalKuotaSekolah = $smaData->kuota_siswa ?? 0;
+            
+            // 2. Hitung Kuota Jalur Berdasarkan Persentase
+            $persentase = self::KUOTA_PERSEN[$jalur_id] ?? 0;
+            $kuotaJalur = (int) floor($totalKuotaSekolah * $persentase); // Cast ke integer
+            // dd(['ID SMA' => $sma_id, 'Kuota Total DB' => $totalKuotaSekolah, 'Jalur ID' => $jalur_id, 'Persen' => $persentase, 'Kuota Jalur Final' => $kuotaJalur]);
+        }
 
         if ($sma_id) {
             $query = Siswa::with('user', 'sekolahAsal')
@@ -227,9 +312,13 @@ class AdminSekolahController extends Controller
             }else {
                 $siswas = $query->orderByDesc('nilai_akhir')->orderBy('tanggal_lahir');
             }
+            if ($selection_ended) {
+                // Jika seleksi selesai, batasi hasil hanya sejumlah kuota yang tersedia
+                $query->limit($kuotaJalur);
+            }
             $siswas = $query->get();
         }
         
-        return view('admin_sekolah.peringkat_murid', compact('siswas', 'jalurs', 'jalur_id'));
+        return view('admin_sekolah.peringkat_murid', compact('siswas', 'jalurs', 'jalur_id', 'selection_ended', 'kuotaJalur'));
     }
 }

@@ -55,6 +55,7 @@
                     {{-- Tambahkan card lain di sini jika diperlukan (misal: Total Siswa Menunggu Verifikasi) --}}
                 </div>
             </div>
+            
         </div>
     </div>
 @endsection

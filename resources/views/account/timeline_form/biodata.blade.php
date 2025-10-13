@@ -69,6 +69,28 @@
                 class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none">
             </div>
 
+            <div class="sm:col-span-6">
+                <div class="p-3 bg-gray-50 border border-gray-300 rounded-lg">
+                    <label class="block text-sm font-bold text-gray-700 mb-2">Tentukan Titik Lokasi Domisili Rumah</label>
+                    <p class="text-xs text-red-500 mb-2">Klik atau seret penanda pada peta untuk menentukan koordinat rumah Anda.</p>
+                    
+                    <div id="mapid" style="height: 300px;" class="rounded-lg border border-gray-400"></div>
+
+                    <div class="mt-3 grid grid-cols-2 gap-4">
+                        <div class="relative px-3 pt-3 border border-gray-400 rounded-lg">
+                            <label for="latitude" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Latitude</label>
+                            <input type="text" name="latitude" id="latitude" value="{{ $siswa->latitude_siswa ?? '-7.3690' }}" required
+                            class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none" readonly>
+                        </div>
+                        <div class="relative px-3 pt-3 border border-gray-400 rounded-lg">
+                            <label for="longitude" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Longitude</label>
+                            <input type="text" name="longitude" id="longitude" value="{{ $siswa->longitude_siswa ?? '109.3496' }}" required
+                            class="block w-full px-1 mt-3 text-base text-gray-800 border-0 focus:ring-0 focus:outline-none" readonly>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="sm:col-span-2 relative px-3 pt-3 border border-gray-400 rounded-lg">
                 <label for="no_kk" class="absolute left-3 px-1 text-xs bg-white text-gray-700">Nomor KK</label>
                 <input type="text" name="no_kk" id="no_kk" placeholder="No KK" value="{{ $siswa->no_kk ?? '' }}" required
@@ -112,6 +134,7 @@
                         <option value="Hindu" {{ (isset($siswa->agama) && $siswa->agama == 'Hindu') ? 'selected' : '' }}>Hindu</option>
                         <option value="Budha" {{ (isset($siswa->agama) && $siswa->agama == 'Budha') ? 'selected' : '' }}>Budha</option>
                         <option value="Konghucu" {{ (isset($siswa->agama) && $siswa->agama == 'Konghucu') ? 'selected' : '' }}>Konghucu</option>
+                        
                 </select>
             </div>
             <div class="sm:col-span-3 relative px-3 pt-3 border border-gray-400 rounded-lg">
@@ -189,3 +212,60 @@
         </div>
     </div>
 </div>
+
+@push('styles')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Nilai awal dari input (jika sudah ada data) atau default ke Purbalingga
+            var defaultLat = parseFloat(document.getElementById('latitude').value) || -7.3690; 
+            var defaultLng = parseFloat(document.getElementById('longitude').value) || 109.3496;
+
+            // Inisialisasi Peta
+            var map = L.map('mapid').setView([defaultLat, defaultLng], 13);
+
+            // Tile Layer (Map Tampilan)
+            L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                maxZoom: 19,
+                attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            }).addTo(map);
+
+            // Tambahkan Penanda (Marker)
+            var marker = L.marker([defaultLat, defaultLng], {
+                draggable: true // Membuat penanda bisa diseret
+            }).addTo(map);
+
+            // Fungsi Update Koordinat
+            function updateCoordinates(lat, lng) {
+                document.getElementById('latitude').value = lat.toFixed(6);
+                document.getElementById('longitude').value = lng.toFixed(6);
+            }
+
+            // Event saat Penanda diseret
+            marker.on('dragend', function (e) {
+                var coords = e.target.getLatLng();
+                updateCoordinates(coords.lat, coords.lng);
+            });
+
+            // Event saat Peta diklik (opsional, untuk penempatan penanda baru)
+            map.on('click', function (e) {
+                marker.setLatLng(e.latlng);
+                updateCoordinates(e.latlng.lat, e.latlng.lng);
+            });
+            
+            // Inisialisasi awal nilai input
+            updateCoordinates(defaultLat, defaultLng);
+
+            // 🌟 FIX UTAMA: Perintah ini memastikan peta menyesuaikan diri
+            // setelah container div selesai di-render dan memiliki ukuran definitif.
+            setTimeout(function () {
+                map.invalidateSize();
+            }, 300); // Penundaan 300ms memberi waktu lebih untuk rendering DOM.
+        });
+    </script>
+@endpush

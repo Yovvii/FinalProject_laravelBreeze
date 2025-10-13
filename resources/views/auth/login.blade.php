@@ -52,7 +52,7 @@
     </div>
     
     <button class="mt-5 w-full bg-gray-900 py-2 rounded-xl font-poppins">
-        {{ __('Log in') }}
+        Log in
     </button>
     
     <p class="text-black text-[14px] text-center mt-[5%]">Belum punya akun?

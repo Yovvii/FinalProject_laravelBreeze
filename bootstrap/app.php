@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->alias([
+            // Tambahkan alias 'auth' yang hilang
+            'auth' => \App\Http\Middleware\Authenticate::class,
+            
+            // Tambahkan alias middleware Anda yang sudah ada
             'is_super_admin' => \App\Http\Middleware\IsSuperAdmin::class,
+            'is_admin_sekolah' => \App\Http\Middleware\IsAdminSekolah::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

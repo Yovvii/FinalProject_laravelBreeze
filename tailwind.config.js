@@ -29,6 +29,13 @@ export default {
                 poppins: ['"Poppins"', 'sans-serif'],
                 noto_serif: ['"Noto Serif"', 'serif'],
             },
+
+            zIndex: {
+                '60': '60',
+                '70': '70',
+                '100': '100',
+                '9999': '9999', // misalnya mau super tinggi
+            },
         },
     },
 

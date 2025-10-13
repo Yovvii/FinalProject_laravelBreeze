@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Traits\LogsStudentActions;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 
@@ -20,6 +21,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider;
 
 class AuthenticatedSessionController extends Controller
 {
+    use LogsStudentActions;
     /**
      * Display the login view.
      */
@@ -70,6 +72,7 @@ class AuthenticatedSessionController extends Controller
 
         // Login user
         Auth::login($user, $request->boolean('remember'));
+        $user->load('siswa');
 
         $request->session()->regenerate();
 
@@ -77,8 +80,9 @@ class AuthenticatedSessionController extends Controller
 
         // dd(Session::all());
 
-        return redirect()->intended(route('dashboard'));
+        // return redirect()->intended(route('dashboard'))->with('success', 'Berhasil login!, Silahkan lanjutkan tahap selanjutnya!');
         // return redirect()->intended(RouteServiceProvider::HOME);
+        return $this->logAndRedirect('dashboard', 'success', 'Berhasil login! Selamat datang kembali. Silahkan lanjutkan tahap selanjutnya!');
     }
 
     /**

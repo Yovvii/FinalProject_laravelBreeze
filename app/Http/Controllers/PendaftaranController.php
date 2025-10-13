@@ -11,7 +11,9 @@ use App\Models\SekolahAsal;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use App\Traits\LogsStudentActions;
 use Illuminate\Support\Facades\DB;
+use App\Models\NotificationHistory;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -19,6 +21,8 @@ use Illuminate\Validation\ValidationException;
 
 class PendaftaranController extends Controller
 {
+    use LogsStudentActions;
+    
     public function showTimeline(Request $request, $pathStep = null)
     {
         $progress = Auth::user()->timelineProgress->current_step ?? 1;
@@ -48,7 +52,13 @@ class PendaftaranController extends Controller
             ];
         }
 
-        if ($siswa && $siswa->status_pendaftaran_akun === 'completed') {
+        if ($siswa && ($siswa->has_completed_steps)) {
+            NotificationHistory::create([
+                'user_id' => $user->id,
+                'type' => 'success',
+                'message' => 'Proses pembuatan akun telah selesai!',
+                'is_read' => false,
+            ]);
             return redirect()->route('setelah.dashboard.show');
         }
 
@@ -105,6 +115,10 @@ class PendaftaranController extends Controller
             'foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'akta_file' => 'nullable|file|mimes:pdf|max:2048',
 
+            // data user
+            'name' => 'required|string|max:255',
+            'email' => 'nullable|string|email|max:255',
+
             // data siswa
             'jenis_kelamin' => 'nullable|string',
             'kabupaten' => 'nullable|string|max:255',
@@ -120,6 +134,8 @@ class PendaftaranController extends Controller
             'agama' => 'nullable|string',
             'kebutuhan_k' => 'nullable|string',
             'sekolah_asal_id' => 'nullable|integer',
+            'latitude' => 'required|numeric', 
+            'longitude' => 'required|numeric',
             
             // data wali
             'nama_wali' => 'nullable|string|max:255',
@@ -131,12 +147,11 @@ class PendaftaranController extends Controller
 
         DB::transaction(function () use ($validatedData, $request) {
             $user = Auth::user();
-
+            $user->name = $validatedData['name'];
             $user->email = $validatedData['email'];
             $user->save();
 
             $siswa = $user->siswa;
-
             $siswa = $user->siswa ?? new Siswa();
             $siswa->user_id = $user->id;
 
@@ -160,7 +175,16 @@ class PendaftaranController extends Controller
             // dd($validatedData);
 
             $siswa->fill($siswaData);
+            $siswa->latitude_siswa = $validatedData['latitude'];
+            $siswa->longitude_siswa = $validatedData['longitude'];
             $siswa->save();
+
+            NotificationHistory::create([
+                'user_id' => $user->id,
+                'type' => 'success',
+                'message' => 'Biodata berhasil disimpan',
+                'is_read' => false,
+            ]);
 
             $ortuData = $request->only([
                 'nama_wali', 'tempat_lahir_wali', 'tanggal_lahir_wali', 'pekerjaan_wali', 'alamat_wali'
@@ -260,6 +284,13 @@ class PendaftaranController extends Controller
                 }
             }
 
+            NotificationHistory::create([
+                'user_id' => $userId,
+                'type' => 'success',
+                'message' => 'Data rapor berhasil disimpan',
+                'is_read' => false,
+            ]);
+
             DB::commit();
             return redirect()->back()->with('success', 'Data rapor berhasil disimpan!');
         } catch (ValidationException $e) {
@@ -288,6 +319,13 @@ class PendaftaranController extends Controller
                 }
                 $siswa->surat_pernyataan = $request->file('surat_pernyataan')->store('surat_pernyataan', 'public');
                 $siswa->save();
+
+                NotificationHistory::create([
+                    'user_id' => $user->id,
+                    'type' => 'success',
+                    'message' => 'Surat Pernyataan berhasil diupload!',
+                    'is_read' => false,
+                ]);
             }
         });
 
@@ -322,7 +360,15 @@ class PendaftaranController extends Controller
             }
             if ($request->input('current_step') == 4) {
                 $siswa->status_pendaftaran_akun = 'completed'; // Tambahkan kolom status baru
+                $siswa->has_completed_steps = true;
                 $siswa->save();
+
+                NotificationHistory::create([
+                    'user_id' => $user->id,
+                    'type' => 'success',
+                    'message' => 'Surat Keterangan Lulus dan Ijazah berhasil disubmit!',
+                    'is_read' => false,
+                ]);
             }
         });
 
@@ -335,7 +381,21 @@ class PendaftaranController extends Controller
         $user = Auth::user();
         $user->load('siswa.dataSma', 'siswa.jalurPendaftaran');
         $siswa = $user->siswa;
+
+        $notifications = $user->notifications()
+                          ->where('is_read', false)
+                          ->orderBy('created_at', 'desc')
+                          ->get();
+
+        if ($notifications->isNotEmpty()) {
+            DB::transaction(function () use ($notifications) {
+                NotificationHistory::whereIn('id', $notifications->pluck('id'))
+                                ->update(['is_read' => false]);
+            });
+        }
+
+        // dd($notifications->toArray());
         
-        return view('setelah_dashboard', compact('siswa'));
+        return view('setelah_dashboard', compact('siswa', 'notifications'))->with('success', 'Proses Pembuatan Akun Telah Selesai!');
     }
 }

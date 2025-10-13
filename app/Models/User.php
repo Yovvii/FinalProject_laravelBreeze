@@ -79,4 +79,9 @@ class User extends Authenticatable
     {
         return $this->belongsTo(DataSma::class, 'sma_data_id');
     }
+
+    public function notifications()
+    {
+        return $this->hasMany(NotificationHistory::class);
+    }
 }

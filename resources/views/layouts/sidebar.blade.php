@@ -1,5 +1,6 @@
 @php
     use Illuminate\Support\Facades\Auth;
+    use App\Http\Controllers\AplicationController;
     
     // Asumsi: Anda mengimpor model Siswa atau menggunakan relasi Auth::user()->siswa
     $siswa = Auth::user()->siswa ?? null; 
@@ -11,6 +12,7 @@
         // Jika pendaftaran selesai, arahkan ke peringkat
         $targetRoute = route('siswa.peringkat');
     }
+    $unreadCount = AplicationController::unreadCount();
 @endphp
 <div class="hidden lg:flex min-h-screen">
     <aside class="w-64 bg-blue-700 text-white flex flex-col fixed h-screen">
@@ -24,15 +26,29 @@
                 class="rounded-full">
             </div>
 
-            <span class="mt-2 font-black">{{ Auth::user()->name }}</span>
+            <a href="{{ route('profile.settings') }}" class="mt-2 font-black text-center hover:underline">
+                {{ Auth::user()->name }}
+            </a>
             <span class="font-light text-sm tracking-wide">{{ Auth::user()->siswa->nisn }}</span>
         </div>
 
         <nav class="flex-1 mt-6 px-5">
             <ul class="space-y-4">
                 <li>
-                    <a href="{{ route('dashboard') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('dashboard') || request()->routeIs('setelah.dashboard.show') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
+                    @php
+                        // 🚨 KUNCI: Tentukan rute berdasarkan status has_completed_steps
+                        // Pastikan variabel $siswa tersedia dan objek Siswa sudah dimuat.
+                        $targetRoute = (Auth::user()->siswa && Auth::user()->siswa->has_completed_steps) 
+                                        ? route('setelah.dashboard.show') 
+                                        : route('dashboard');
+                        
+                        // Cek apakah rute saat ini cocok dengan salah satu rute yang disorot
+                        $isActive = request()->routeIs('dashboard') || request()->routeIs('setelah.dashboard.show');
+                    @endphp
+
+                    <a href="{{ $targetRoute }}" 
+                    class="flex items-center px-3 py-2 rounded-lg {{ $isActive ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
+                        
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                             <path fill="currentColor" d="M11.5 1L2 6v2h19V6m-5 4v7h3v-7M2 22h19v-3H2m8-9v7h3v-7m-9 0v7h3v-7z"/>
                         </svg>
@@ -49,23 +65,23 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('notification.index') }}" class="flex items-center px-3 py-2 rounded-lg
+                    <a href="{{ route('notification.index') }}" class="flex items-center p-2 text-base font-normal rounded-lg
                     {{ request()->routeIs('notification.index') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6">
+                        {{-- Icon Notifikasi (Ganti dengan SVG jika ada) --}}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" fill="currentColor" class="size-6 ml-1">
                             <path fill-rule="evenodd" d="M12 5a4 4 0 0 0-8 0v2.379a1.5 1.5 0 0 1-.44 1.06L2.294 9.707a1 1 0 0 0-.293.707V11a1 1 0 0 0 1 1h2a3 3 0 1 0 6 0h2a1 1 0 0 0 1-1v-.586a1 1 0 0 0-.293-.707L12.44 8.44A1.5 1.5 0 0 1 12 7.38V5Zm-5.5 7a1.5 1.5 0 0 0 3 0h-3Z" clip-rule="evenodd" />
                         </svg>
-                        <span class="ml-3">Notification</span>
+
+                        <span class="ml-3">Notifikasi</span>
+                        
+                        {{-- BADGE JUMLAH BELUM DIBACA --}}
+                        @if ($unreadCount > 0)
+                            <span class="inline-flex items-center justify-center px-2 py-0.5 ml-auto text-xs font-medium text-red-800 bg-red-100 rounded-full dark:bg-red-900 dark:text-red-300">
+                                {{ $unreadCount }}
+                            </span>
+                        @endif
                     </a>
                 </li>
-                {{-- <li>
-                    <a href="{{ route('test_field') }}" class="flex items-center px-3 py-2 rounded-lg
-                    {{ request()->routeIs('test_field') || request()->routeIs('test_field') ? 'bg-blue-800' : 'bg-blue-700 hover:bg-blue-600' }}">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-6">
-                            <path fill-rule="evenodd" d="M10.5 3.798v5.02a3 3 0 0 1-.879 2.121l-2.377 2.377a9.845 9.845 0 0 1 5.091 1.013 8.315 8.315 0 0 0 5.713.636l.285-.071-3.954-3.955a3 3 0 0 1-.879-2.121v-5.02a23.614 23.614 0 0 0-3 0Zm4.5.138a.75.75 0 0 0 .093-1.495A24.837 24.837 0 0 0 12 2.25a25.048 25.048 0 0 0-3.093.191A.75.75 0 0 0 9 3.936v4.882a1.5 1.5 0 0 1-.44 1.06l-6.293 6.294c-1.62 1.621-.903 4.475 1.471 4.88 2.686.46 5.447.698 8.262.698 2.816 0 5.576-.239 8.262-.697 2.373-.406 3.092-3.26 1.47-4.881L15.44 9.879A1.5 1.5 0 0 1 15 8.818V3.936Z" clip-rule="evenodd" />
-                        </svg>
-                        <span class="ml-3">Test Field</span>
-                    </a>
-                </li> --}}
                 <li>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
